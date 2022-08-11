@@ -68,17 +68,28 @@ DELIMITER ',' CSV HEADER;
 
 -- How many total crimes were reported in 2021?
 
-SELECT COUNT(CRIME_ID) AS "Total Crimes"
+SELECT COUNT(CRIME_ID) AS "Total Reported Crimes"
 FROM CRIMES;
+
+-- Results:
+
+Total Reported Crimes|
+---------------------+
+               202536|
 
 -- What is the count of Homicides, Battery and Assaults reported?
 
-SELECT CRIME_TYPE,
+SELECT
+	CRIME_TYPE,
 	COUNT(*)
-FROM CRIMES
-WHERE CRIME_TYPE in ('homicide', 'battery','assault')
-GROUP BY CRIME_TYPE
-ORDER BY COUNT(*) DESC;
+FROM
+	CRIMES
+WHERE
+	CRIME_TYPE IN ('homicide', 'battery', 'assault')
+GROUP BY
+	CRIME_TYPE
+ORDER BY
+	COUNT(*) DESC;
 
 -- What are the top ten communities that had the most crimes reported?
 -- We will also add the current population to see if area density is also a factor.
@@ -95,6 +106,14 @@ GROUP BY CO.COMMUNITY_NAME,
 ORDER BY COUNT(*) DESC
 LIMIT 10;
 
+-- Results:
+
+crime_type|count|
+----------+-----+
+battery   |39988|
+assault   |20086|
+homicide  |  803|
+
 -- What are the top ten communities that had the least amount of crimes reported?
 -- We will also add the current population to see if area density is also a factor.
 
@@ -110,44 +129,196 @@ GROUP BY COMMUNITY_NAME,
 ORDER BY COUNT(*)
 LIMIT 10;
 
+-- Results:
+
+community      |population|density |Reported Crimes|
+---------------+----------+--------+---------------+
+edison park    |     11525|10199.12|            238|
+burnside       |      2527| 4142.62|            321|
+forest glen    |     19596| 6123.75|            460|
+mount greenwood|     18628| 6873.80|            492|
+montclare      |     14401|14546.46|            508|
+fuller park    |      2567| 3615.49|            541|
+oakland        |      6799|11722.41|            581|
+hegewisch      |     10027| 1913.55|            598|
+archer heights |     14196| 7062.69|            653|
+north park     |     17559| 6967.86|            679|
+
+
 -- What month had the most crimes reported?
 
-SELECT EXTRACT(MONTH FROM CRIME_DATE), COUNT(*)
-FROM CRIMES
-GROUP BY EXTRACT(MONTH FROM CRIME_DATE)
-ORDER BY COUNT(*) DESC;
+SELECT
+	EXTRACT(MONTH FROM CRIME_DATE)::int AS month_number,
+	COUNT(*) AS n_crimes
+FROM
+	CRIMES
+GROUP BY
+	EXTRACT(MONTH
+FROM
+	CRIME_DATE)
+ORDER BY
+	COUNT(*) DESC;
+
+-- Results:
+
+month_number|n_crimes|
+------------+--------+
+          10|   19018|
+           9|   18987|
+           7|   18966|
+           6|   18566|
+           8|   18255|
+           5|   17539|
+          11|   16974|
+           1|   16038|
+           3|   15742|
+           4|   15305|
+          12|   14258|
+           2|   12888|
 
 -- What month had the most homicides?
 
-SELECT EXTRACT(MONTH FROM CRIME_DATE), COUNT(*)
-FROM CRIMES
-WHERE CRIME_TYPE = 'homicide'
-GROUP BY EXTRACT(MONTH FROM CRIME_DATE)
-ORDER BY COUNT(*) DESC;
+SELECT
+	EXTRACT(MONTH FROM CRIME_DATE)::int AS month_number,
+	COUNT(*) AS n_homicides
+FROM
+	CRIMES
+WHERE
+	CRIME_TYPE = 'homicide'
+GROUP BY
+	EXTRACT(MONTH
+FROM
+	CRIME_DATE)
+ORDER BY
+	COUNT(*) DESC;
+
+-- Results:
+
+month_number|n_homicides|
+------------+-----------+
+           7|        112|
+           9|         89|
+           6|         85|
+           8|         81|
+           5|         66|
+          10|         64|
+          11|         62|
+           1|         55|
+           4|         54|
+          12|         52|
+           3|         45|
+           2|         38|
 
 -- What weekday were most crimes committed?
 
-SELECT WEEKDAY, COUNT(*)
-FROM WEATHER
-INNER JOIN CRIMES ON DATE(CRIMES.CRIME_DATE) = DATE(WEATHER.WEATHER_DATE)
-GROUP BY WEEKDAY
-ORDER BY COUNT(*) DESC;
+SELECT
+	WEEKDAY,
+	COUNT(*) AS n_crimes
+FROM
+	WEATHER
+INNER JOIN CRIMES ON
+	DATE(CRIMES.CRIME_DATE) = DATE(WEATHER.WEATHER_DATE)
+GROUP BY
+	WEEKDAY
+ORDER BY
+	COUNT(*) DESC;
+
+-- Results:
+
+weekday  |n_crimes|
+---------+--------+
+Saturday |   29841|
+Friday   |   29829|
+Sunday   |   29569|
+Monday   |   29194|
+Wednesday|   28143|
+Tuesday  |   28135|
+Thursday |   27825|
 
 -- What are the top ten city streets that have had the most reported crimes?
 
-SELECT STREET_NAME, COUNT(*)
-FROM CRIMES
-GROUP BY STREET_NAME
-ORDER BY COUNT(*) DESC
-LIMIT 10
+SELECT
+	STREET_NAME,
+	COUNT(*) AS n_crimes
+FROM
+	CRIMES
+GROUP BY
+	STREET_NAME
+ORDER BY
+	COUNT(*) DESC
+LIMIT 10;
+
+-- Results:
+
+street_name                 |n_crimes|
+----------------------------+--------+
+ michigan ave               |    3257|
+ state st                   |    2858|
+ halsted st                 |    2329|
+ ashland ave                |    2276|
+ clark st                   |    2036|
+ western ave                |    1987|
+ dr martin luther king jr dr|    1814|
+ pulaski rd                 |    1686|
+ kedzie ave                 |    1606|
+ madison st                 |    1584|
 
 -- What are the top ten city streets that have had the most homicides?
 
-SELECT STREET_NAME, COUNT(*)
-FROM CRIMES
-where crime_type = 'homicide'
-GROUP BY STREET_NAME
-ORDER BY COUNT(*) DESC
-LIMIT 10
+SELECT
+	STREET_NAME,
+	COUNT(*) AS n_homicides
+FROM
+	CRIMES
+WHERE
+	crime_type = 'homicide'
+GROUP BY
+	STREET_NAME	
+ORDER BY
+	COUNT(*) DESC
+LIMIT 10;
 
+-- Results:
 
+street_name                 |n_homicides|
+----------------------------+-----------+
+ madison st                 |         14|
+ 79th st                    |         14|
+ morgan st                  |         10|
+ 71st st                    |         10|
+ michigan ave               |          9|
+ cottage grove ave          |          9|
+ van buren st               |          8|
+ emerald ave                |          7|
+ cicero ave                 |          7|
+ dr martin luther king jr dr|          7|
+
+-- What are the top ten city streets that have had the most burglaries?
+
+SELECT
+	STREET_NAME,
+	COUNT(*) AS n_burglaries
+FROM
+	CRIMES
+WHERE
+	crime_type = 'burglary'
+GROUP BY
+	STREET_NAME	
+ORDER BY
+	COUNT(*) DESC
+LIMIT 10;
+
+-- Results:
+
+street_name                 |n_burglaries|
+----------------------------+------------+
+ ashland ave                |         104|
+ halsted st                 |         103|
+ michigan ave               |          92|
+ western ave                |          79|
+ kedzie ave                 |          67|
+ north ave                  |          62|
+ chicago ave                |          50|
+ dr martin luther king jr dr|          50|
+ 79th st                    |          48|
+ sheridan rd                |          45|
