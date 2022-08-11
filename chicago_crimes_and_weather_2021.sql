@@ -81,7 +81,7 @@ Total Reported Crimes|
 
 SELECT
 	CRIME_TYPE,
-	COUNT(*)
+	COUNT(*) AS n_crimes
 FROM
 	CRIMES
 WHERE
@@ -90,6 +90,14 @@ GROUP BY
 	CRIME_TYPE
 ORDER BY
 	COUNT(*) DESC;
+
+-- Results:
+
+crime_type|n_crimes|
+----------+--------+
+battery   |   39988|
+assault   |   20086|
+homicide  |     803|
 
 -- What are the top ten communities that had the most crimes reported?
 -- We will also add the current population to see if area density is also a factor.
@@ -108,11 +116,18 @@ LIMIT 10;
 
 -- Results:
 
-crime_type|count|
-----------+-----+
-battery   |39988|
-assault   |20086|
-homicide  |  803|
+community             |population|density |Reported Crimes|
+----------------------+----------+--------+---------------+
+austin                |     96557|13504.48|          11341|
+near north side       |    105481|38496.72|           8126|
+south shore           |     53971|18420.14|           7272|
+near west side        |     67881|11929.88|           6743|
+north lawndale        |     34794|10839.25|           6161|
+auburn gresham        |     44878|11903.98|           5873|
+humboldt park         |     54165|15045.83|           5767|
+greater grand crossing|     31471| 8865.07|           5545|
+west town             |     87781|19166.16|           5486|
+loop                  |     42298|25635.15|           5446|
 
 -- What are the top ten communities that had the least amount of crimes reported?
 -- We will also add the current population to see if area density is also a factor.
