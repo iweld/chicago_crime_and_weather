@@ -62,6 +62,21 @@ CREATE TEMP TABLE chicago_crimes AS (
 
 SELECT * FROM chicago_crimes LIMIT 10;
 
+-- Results:
+
+crime_id|crime_date             |crime_type       |crime_description      |location_description|street_name      |community_name|population|area_size|density |arrest|domestic|temp_high|temp_low|precipitation|
+--------+-----------------------+-----------------+-----------------------+--------------------+-----------------+--------------+----------+---------+--------+------+--------+---------+--------+-------------+
+       1|2021-01-03 13:23:00.000|battery          |domestic battery simple|apartment           | eggleston ave   |englewood     |     24369|     3.07| 7937.79|false |true    |       33|      26|         0.01|
+       2|2021-01-03 06:59:00.000|theft            |$500 and under         |residence           | yale ave        |chatham       |     31710|     2.95|10749.15|false |false   |       33|      26|         0.01|
+       3|2021-01-03 00:20:00.000|battery          |domestic battery simple|apartment           | washington blvd |austin        |     96557|     7.15|13504.48|false |true    |       33|      26|         0.01|
+       4|2021-01-03 20:47:00.000|narcotics        |possess - cocaine      |street              | racine ave      |west englewood|     29647|     3.15| 9411.75|true  |false   |       33|      26|         0.01|
+       5|2021-01-03 20:09:00.000|homicide         |first degree murder    |street              | stony island ave|south shore   |     53971|     2.93|18420.14|false |false   |       33|      26|         0.01|
+       6|2021-01-03 08:54:00.000|assault          |simple                 |cha apartment       | yates ave       |south deering |     14105|     10.9| 1294.04|false |false   |       33|      26|         0.01|
+       7|2021-01-03 16:30:00.000|theft            |$500 and under         |apartment           | taylor st       |near west side|     67881|     5.69|11929.88|true  |true    |       33|      26|         0.01|
+       8|2021-01-03 23:47:00.000|weapons violation|unlawful use - handgun |street              | 69th st         |south shore   |     53971|     2.93|18420.14|false |false   |       33|      26|         0.01|
+       9|2021-01-03 22:30:00.000|criminal damage  |to property            |residence - garage  | thome ave       |edgewater     |     56296|     1.74|32354.02|false |false   |       33|      26|         0.01|
+      10|2021-01-03 01:00:00.000|criminal trespass|to vehicle             |street              | blackstone ave  |hyde park     |     29456|     1.61|18295.65|false |false   |       33|      26|         0.01|
+
 -- What are the top ten communities that had the most crimes reported?
 -- We will also add the current population to see if area density is also a factor.
 
@@ -307,4 +322,28 @@ street_name                 |n_burglaries|
  79th st                    |          48|
  sheridan rd                |          45|
  
+ -- What was the number of reported crimes on the hottest day of the year vs the coldest?
 
+WITH hottest AS (
+	SELECT
+	  	temp_high,
+	 	count(*) AS n_crimes
+	FROM
+	 	chicago_crimes
+	WHERE
+	 	temp_high = (SELECT max(temp_high) FROM chicago_crimes)
+	GROUP BY temp_high
+),
+coldest AS (
+	SELECT
+	  	temp_high,
+	 	count(*) AS n_crimes
+	FROM
+	 	chicago_crimes
+	WHERE
+	 	temp_high = (SELECT min(temp_high) FROM chicago_crimes)
+	GROUP BY temp_high
+)
+ 	
+ 
+COPY chicago_crimes TO 'C:\Users\Jaime\Desktop\chicago_crimes.csv' DELIMITER ',' CSV HEADER;
