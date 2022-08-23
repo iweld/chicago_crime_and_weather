@@ -39,7 +39,7 @@ DROP TABLE IF EXISTS chicago_crimes;
 CREATE TEMP TABLE chicago_crimes AS (
 	SELECT
 		cr.crime_id, 
-		to_char(cr.crime_date::timestamp, 'yyyy-mm-dd hh24:mi') AS crime_date,
+		date_trunc('second', cr.crime_date) AS crime_date,
 		cr.crime_type,
 		cr.crime_description,
 		cr.location_description,
@@ -65,21 +65,22 @@ SELECT * FROM chicago_crimes LIMIT 10;
 -- What are the top ten communities that had the most crimes reported?
 -- We will also add the current population to see if area density is also a factor.
 
-SELECT CO.COMMUNITY_NAME AS COMMUNITY,
-	CO.POPULATION,
-	CO.DENSITY,
-	COUNT(*) AS "Reported Crimes"
-FROM COMMUNITY AS CO
-INNER JOIN CRIMES AS CR ON CR.COMMUNITY_ID = CO.AREA_ID
-GROUP BY CO.COMMUNITY_NAME,
-	CO.POPULATION,
-	CO.DENSITY
-ORDER BY COUNT(*) DESC
+SELECT 
+	community_name AS community,
+	population,
+	density,
+	count(*) AS reported_crimes
+FROM chicago_crimes
+group BY 
+	community_name,
+	population,
+	density
+ORDER BY reported_crimes DESC
 LIMIT 10;
 
 -- Results:
 
-community             |population|density |Reported Crimes|
+community             |population|density |reported_crimes|
 ----------------------+----------+--------+---------------+
 austin                |     96557|13504.48|          11341|
 near north side       |    105481|38496.72|           8126|
@@ -95,16 +96,17 @@ loop                  |     42298|25635.15|           5446|
 -- What are the top ten communities that had the least amount of crimes reported?
 -- We will also add the current population to see if area density is also a factor.
 
-SELECT COMMUNITY_NAME AS COMMUNITY,
-	CO.POPULATION,
-	CO.DENSITY,
-	COUNT(*) AS "Reported Crimes"
-FROM COMMUNITY AS CO
-INNER JOIN CRIMES AS CR ON CR.COMMUNITY_ID = CO.AREA_ID
-GROUP BY COMMUNITY_NAME,
-	CO.POPULATION,
-	CO.DENSITY
-ORDER BY COUNT(*)
+SELECT 
+	community_name AS community,
+	population,
+	density,
+	count(*) AS reported_crimes
+FROM chicago_crimes
+group BY 
+	community_name,
+	population,
+	density
+ORDER BY reported_crimes
 LIMIT 10;
 
 -- Results:
@@ -126,104 +128,99 @@ north park     |     17559| 6967.86|            679|
 -- What month had the most crimes reported?
 
 SELECT
-	EXTRACT(MONTH FROM CRIME_DATE)::int AS month_number,
+	to_char(CRIME_DATE::timestamp, 'Month') AS month,
 	COUNT(*) AS n_crimes
 FROM
-	CRIMES
+	chicago_crimes
 GROUP BY
-	EXTRACT(MONTH
-FROM
-	CRIME_DATE)
+	month
 ORDER BY
-	COUNT(*) DESC;
+	n_crimes DESC;
 
 -- Results:
 
-month_number|n_crimes|
-------------+--------+
-          10|   19018|
-           9|   18987|
-           7|   18966|
-           6|   18566|
-           8|   18255|
-           5|   17539|
-          11|   16974|
-           1|   16038|
-           3|   15742|
-           4|   15305|
-          12|   14258|
-           2|   12888|
+month    |n_crimes|
+---------+--------+
+October  |   19018|
+September|   18987|
+July     |   18966|
+June     |   18566|
+August   |   18255|
+May      |   17539|
+November |   16974|
+January  |   16038|
+March    |   15742|
+April    |   15305|
+December |   14258|
+February |   12888|
 
--- What month had the most homicides?
+-- What month had the most homicides and what was the average temperature?
 
 SELECT
-	EXTRACT(MONTH FROM CRIME_DATE)::int AS month_number,
-	COUNT(*) AS n_homicides
+	to_char(CRIME_DATE::timestamp, 'Month') AS month,
+	COUNT(*) AS n_homicides,
+	round(avg(temp_high), 1) AS avg_high_temp
 FROM
-	CRIMES
-WHERE
-	CRIME_TYPE = 'homicide'
+	chicago_crimes
+WHERE crime_type = 'homicide'
 GROUP BY
-	EXTRACT(MONTH
-FROM
-	CRIME_DATE)
+	month
 ORDER BY
-	COUNT(*) DESC;
+	n_homicides DESC;
+
 
 -- Results:
 
-month_number|n_homicides|
-------------+-----------+
-           7|        112|
-           9|         89|
-           6|         85|
-           8|         81|
-           5|         66|
-          10|         64|
-          11|         62|
-           1|         55|
-           4|         54|
-          12|         52|
-           3|         45|
-           2|         38|
+month    |n_homicides|avg_high_temp|
+---------+-----------+-------------+
+July     |        112|         82.6|
+September|         89|         80.8|
+June     |         85|         83.5|
+August   |         81|         85.3|
+May      |         66|         73.9|
+October  |         64|         67.9|
+November |         62|         50.6|
+January  |         55|         34.1|
+April    |         54|         65.1|
+December |         52|         48.6|
+March    |         45|         54.7|
+February |         38|         27.0|
 
 -- What weekday were most crimes committed?
 
 SELECT
-	WEEKDAY,
+	to_char(CRIME_DATE::timestamp, 'Day') AS day_of_week,
 	COUNT(*) AS n_crimes
 FROM
-	WEATHER
-INNER JOIN CRIMES ON
-	DATE(CRIMES.CRIME_DATE) = DATE(WEATHER.WEATHER_DATE)
+	chicago_crimes
 GROUP BY
-	WEEKDAY
+	day_of_week
 ORDER BY
-	COUNT(*) DESC;
+	n_crimes DESC;
 
 -- Results:
 
-weekday  |n_crimes|
----------+--------+
-Saturday |   29841|
-Friday   |   29829|
-Sunday   |   29569|
-Monday   |   29194|
-Wednesday|   28143|
-Tuesday  |   28135|
-Thursday |   27825|
+day_of_week|n_crimes|
+-----------+--------+
+Saturday   |   29841|
+Friday     |   29829|
+Sunday     |   29569|
+Monday     |   29194|
+Wednesday  |   28143|
+Tuesday    |   28135|
+Thursday   |   27825|
 
 -- What are the top ten city streets that have had the most reported crimes?
 
 SELECT
-	STREET_NAME,
-	COUNT(*) AS n_crimes
+	street_name,
+	count(*) AS n_crimes
 FROM
-	CRIMES
+	chicago_crimes
 GROUP BY
-	STREET_NAME
+	street_name
 ORDER BY
-	COUNT(*) DESC
+	count(*) DESC
 LIMIT 10;
 
 -- Results:
@@ -241,49 +238,58 @@ street_name                 |n_crimes|
  kedzie ave                 |    1606|
  madison st                 |    1584|
 
--- What are the top ten city streets that have had the most homicides?
+-- What are the top ten city streets that have had the most homicides including ties?
 
-SELECT
-	STREET_NAME,
-	COUNT(*) AS n_homicides
-FROM
-	CRIMES
-WHERE
-	crime_type = 'homicide'
-GROUP BY
-	STREET_NAME	
-ORDER BY
-	COUNT(*) DESC
-LIMIT 10;
+ SELECT
+ 	street_name,
+ 	n_homicides
+ from
+	(SELECT
+		street_name,
+		count(*) AS n_homicides,
+		rank() OVER (ORDER BY count(*) DESC) AS rnk
+	FROM
+		chicago_crimes
+	WHERE
+		crime_type = 'homicide'
+	GROUP BY
+		street_name
+	ORDER BY
+		count(*) DESC) AS tmp
+WHERE 
+	rnk <= 10;
 
 -- Results:
 
 street_name                 |n_homicides|
 ----------------------------+-----------+
- madison st                 |         14|
  79th st                    |         14|
+ madison st                 |         14|
  morgan st                  |         10|
  71st st                    |         10|
  michigan ave               |          9|
  cottage grove ave          |          9|
  van buren st               |          8|
- emerald ave                |          7|
  cicero ave                 |          7|
  dr martin luther king jr dr|          7|
+ pulaski rd                 |          7|
+ state st                   |          7|
+ emerald ave                |          7|
+ polk st                    |          7|
 
--- What are the top ten city streets that have had the most burglaries?
+-- What are the top ten city streets that have had the most burglaries excluding ties?
 
 SELECT
-	STREET_NAME,
-	COUNT(*) AS n_burglaries
+	street_name,
+	count(*) AS n_burglaries
 FROM
-	CRIMES
+	chicago_crimes
 WHERE
 	crime_type = 'burglary'
-GROUP BY
-	STREET_NAME	
+group BY
+	street_name
 ORDER BY
-	COUNT(*) DESC
+	n_burglaries DESC
 LIMIT 10;
 
 -- Results:
