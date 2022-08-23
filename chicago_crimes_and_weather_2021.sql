@@ -1,75 +1,9 @@
--- Create the three tables we are going to import of csv data into.
 
-CREATE TABLE CRIMES (
-	CRIME_ID serial, 
-	CRIME_DATE TIMESTAMP,
-	STREET_NAME VARCHAR(100),
-	CRIME_TYPE VARCHAR(150),
-	CRIME_DESCRIPTION VARCHAR(250),
-	LOCATION_DESCRIPTION VARCHAR(150),
-	ARREST boolean, 
-	DOMESTIC boolean, 
-	COMMUNITY_ID int, 
-	LATITUDE numeric, 
-	LONGITUDE numeric, 
-	PRIMARY KEY (CRIME_ID));
-
-
-CREATE TABLE COMMUNITY (
-	AREA_ID int, 
-	COMMUNITY_NAME VARCHAR(250),
-	POPULATION int, 
-	AREA_SIZE numeric, 
-	DENSITY numeric, 
-	PRIMARY KEY (AREA_ID));
-
-
-CREATE TABLE WEATHER (
-	WEATHER_DATE TIMESTAMP,
-	WEEKDAY VARCHAR(20),
-	TEMP_HIGH int, 
-	TEMP_LOW int, 
-	PRECIPITATION numeric, 
-	PRIMARY KEY (WEATHER_DATE));
-	
--- Copy and insert data from csv files to tables.
-
-COPY CRIMES (
-	CRIME_DATE,
-	STREET_NAME,
-	CRIME_TYPE,
-	CRIME_DESCRIPTION,
-	LOCATION_DESCRIPTION,
-	ARREST,
-	DOMESTIC,
-	COMMUNITY_ID,
-	LATITUDE,
-	LONGITUDE)
-FROM '* path to * \csv\chicago_crimes_2021.csv'
-DELIMITER ',' CSV HEADER;
-
-COPY COMMUNITY (
-	AREA_ID, 
-	COMMUNITY_NAME,
-	POPULATION, 
-	AREA_SIZE, 
-	DENSITY)
-FROM '* path to * \csv\chicago_areas.csv'
-DELIMITER ',' CSV HEADER;
-
-COPY WEATHER (
-	WEATHER_DATE,
-	WEEKDAY,
-	TEMP_HIGH, 
-	TEMP_LOW, 
-	PRECIPITATION)
-FROM '* path to * \csv\chicago_temps_2021.csv'
-DELIMITER ',' CSV HEADER;
 
 -- How many total crimes were reported in 2021?
 
-SELECT COUNT(CRIME_ID) AS "Total Reported Crimes"
-FROM CRIMES;
+SELECT count(crime_id) AS "total reported crimes"
+FROM crimes;
 
 -- Results:
 
@@ -79,17 +13,17 @@ Total Reported Crimes|
 
 -- What is the count of Homicides, Battery and Assaults reported?
 
-SELECT
-	CRIME_TYPE,
-	COUNT(*) AS n_crimes
-FROM
-	CRIMES
-WHERE
-	CRIME_TYPE IN ('homicide', 'battery', 'assault')
-GROUP BY
-	CRIME_TYPE
-ORDER BY
-	COUNT(*) DESC;
+SELECT 
+	crime_type,
+	count(*) AS n_crimes
+FROM 
+	crimes
+WHERE 
+	crime_type IN ('homicide', 'battery', 'assault')
+group BY 
+	crime_type
+order BY 
+	n_crimes DESC;
 
 -- Results:
 
@@ -98,6 +32,35 @@ crime_type|n_crimes|
 battery   |   39988|
 assault   |   20086|
 homicide  |     803|
+
+-- Create a temp table that joins data from all three tables
+
+DROP TABLE IF EXISTS chicago_crimes;
+CREATE TEMP TABLE chicago_crimes AS (
+	SELECT
+		cr.crime_id, 
+		to_char(cr.crime_date::timestamp, 'yyyy-mm-dd hh24:mi') AS crime_date,
+		cr.crime_type,
+		cr.crime_description,
+		cr.location_description,
+		cr.street_name,
+		co.community_name,
+		co.population ,
+		co.area_size,
+		co.density,
+		cr.arrest, 
+		cr.domestic,
+		w.temp_high, 
+		w.temp_low, 
+		w.precipitation
+	FROM crimes AS cr
+	JOIN community AS co
+	ON cr.community_id = co.area_id
+	JOIN weather AS w
+	ON w.weather_date = date(cr.crime_date)
+);
+
+SELECT * FROM chicago_crimes LIMIT 10;
 
 -- What are the top ten communities that had the most crimes reported?
 -- We will also add the current population to see if area density is also a factor.
