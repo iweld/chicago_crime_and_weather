@@ -344,6 +344,35 @@ coldest AS (
 	 	temp_high = (SELECT min(temp_high) FROM chicago_crimes)
 	GROUP BY temp_high
 )
+
+SELECT
+	h.temp_high,
+	h.n_crimes
+FROM 
+	hottest AS h
+UNION
+SELECT
+	c.temp_high,
+	c.n_crimes
+FROM 
+	coldest AS c
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  	
  
 COPY chicago_crimes TO 'C:\Users\Jaime\Desktop\chicago_crimes.csv' DELIMITER ',' CSV HEADER;
