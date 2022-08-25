@@ -356,6 +356,13 @@ SELECT
 	c.n_crimes
 FROM 
 	coldest AS c
+	
+-- Results:
+	
+temp_high|n_crimes|
+---------+--------+
+       95|     552|
+        4|     402|
 
 -- What is the number and types of reported crimes on Michigan Ave?	
 	
