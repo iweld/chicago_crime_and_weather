@@ -407,9 +407,36 @@ arson                            |                  1|
 intimidation                     |                  1|
 concealed carry license violation|                  1|
 
+-- What are the top 5 least reported crime and how many arrests and percentage of arrests made?
 
+SELECT
+	crime_type,
+	least_amount,
+	arrest_count,
+	round(100 * (arrest_count::float / least_amount)) AS arrest_percentage
+from
+	(SELECT
+		crime_type,
+		count(*) AS least_amount,
+		sum(CASE
+			WHEN arrest = 'true' THEN 1
+			ELSE 0
+		END) AS arrest_count
+	FROM chicago_crimes
+	GROUP BY 
+		crime_type
+	ORDER BY least_amount
+	LIMIT 5) AS tmp
 
-
+-- Results:
+	
+crime_type              |least_amount|arrest_count|arrest_percentage|
+------------------------+------------+------------+-----------------+
+other narcotic violation|           2|           1|             50.0|
+non-criminal            |           4|           1|             25.0|
+public indecency        |           4|           4|            100.0|
+human trafficking       |          12|           0|              0.0|
+gambling                |          13|          11|             85.0|
 
 
 
