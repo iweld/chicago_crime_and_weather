@@ -357,8 +357,48 @@ SELECT
 FROM 
 	coldest AS c
 
+-- What is the number and types of reported crimes on Michigan Ave?	
+	
+SELECT
+	crime_type,
+	count(*) AS michigan_ave_crimes
+FROM 
+	chicago_crimes
+WHERE 
+	street_name like '%michigan ave%'
+GROUP BY 
+	crime_type
+ORDER BY 
+	michigan_ave_crimes desc
 
-
+-- Results:
+	
+crime_type                       |michigan_ave_crimes|
+---------------------------------+-------------------+
+theft                            |                923|
+battery                          |                564|
+assault                          |                324|
+deceptive practice               |                317|
+criminal damage                  |                269|
+motor vehicle theft              |                212|
+other offense                    |                172|
+weapons violation                |                106|
+robbery                          |                106|
+burglary                         |                 92|
+criminal trespass                |                 53|
+criminal sexual assault          |                 30|
+offense involving children       |                 22|
+narcotics                        |                 16|
+public peace violation           |                 14|
+sex offense                      |                 10|
+homicide                         |                  9|
+liquor law violation             |                  8|
+stalking                         |                  5|
+interference with public officer |                  5|
+obscenity                        |                  1|
+arson                            |                  1|
+intimidation                     |                  1|
+concealed carry license violation|                  1|
 
 
 
