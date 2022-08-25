@@ -407,7 +407,7 @@ arson                            |                  1|
 intimidation                     |                  1|
 concealed carry license violation|                  1|
 
--- What are the top 5 least reported crime and how many arrests and percentage of arrests made?
+-- What are the top 5 least reported crime, how many arrests were made and the percentage of arrests made?
 
 SELECT
 	crime_type,
