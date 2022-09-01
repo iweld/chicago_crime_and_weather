@@ -443,7 +443,7 @@ gambling                |          13|          11|             85.0|
 
 
 
-
+SELECT * FROM crimes
 
 
 
