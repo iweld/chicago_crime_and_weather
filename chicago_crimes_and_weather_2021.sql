@@ -40,6 +40,7 @@ CREATE TEMP TABLE chicago_crimes AS (
 	SELECT
 		cr.crime_id, 
 		date_trunc('second', cr.crime_date) AS crime_date,
+		cr.crime_date::timestamp::time AS time_reported,
 		cr.crime_type,
 		cr.crime_description,
 		cr.location_description,
@@ -52,7 +53,9 @@ CREATE TEMP TABLE chicago_crimes AS (
 		cr.domestic,
 		w.temp_high, 
 		w.temp_low, 
-		w.precipitation
+		w.precipitation,
+		cr.latitude,
+		cr.longitude
 	FROM crimes AS cr
 	JOIN community AS co
 	ON cr.community_id = co.area_id
