@@ -457,6 +457,43 @@ from
 non_domestic_violence|domestic_violence|
 ---------------------+-----------------+
                 78.20|            21.80|
+                
+-- Display how many crimes were reported on a monthly basis in chronological order.  What is the month to month change of crimes reported?
+ 
+ 
+SELECT
+	crime_month,
+	n_crimes,
+	round(100 * (n_crimes - LAG(n_crimes) over()) / LAG(n_crimes) over()::numeric, 2) AS month_to_month
+FROM
+	(SELECT
+		to_char(crime_date, 'Month') AS crime_month,
+		count(*) AS n_crimes
+	FROM 
+		chicago_crimes
+	GROUP BY 
+		crime_month
+	ORDER BY
+		to_date(to_char(crime_date, 'Month'), 'Month')) AS tmp
+		
+-- Results:
+		
+crime_month|n_crimes|month_to_month|
+-----------+--------+--------------+
+January    |   16038|              |
+February   |   12888|        -19.64|
+March      |   15742|         22.14|
+April      |   15305|         -2.78|
+May        |   17539|         14.60|
+June       |   18566|          5.86|
+July       |   18966|          2.15|
+August     |   18255|         -3.75|
+September  |   18987|          4.01|
+October    |   19018|          0.16|
+November   |   16974|        -10.75|
+December   |   14258|        -16.00|
+
+
 
 
 
