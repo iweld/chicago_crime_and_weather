@@ -441,15 +441,28 @@ public indecency        |           4|           4|            100.0|
 human trafficking       |          12|           0|              0.0|
 gambling                |          13|          11|             85.0|
 
+-- What is the percentage of domestic violence crimes?
+
+SELECT
+	100 - n_domestic_perc AS non_domestic_violence,
+	n_domestic_perc AS domestic_violence
+from
+	(SELECT
+		round(100 * (SELECT count(*) FROM chicago_crimes WHERE domestic = true)::numeric / count(*), 2) AS n_domestic_perc
+	FROM 
+		chicago_crimes) AS tmp
+
+-- Results:
+		
+non_domestic_violence|domestic_violence|
+---------------------+-----------------+
+                78.20|            21.80|
 
 
 
-
-
-SELECT * FROM crimes
 
 
 
  	
  
-COPY chicago_crimes TO 'C:\Users\Jaime\Desktop\chicago_crimes.csv' DELIMITER ',' CSV HEADER;
+--COPY chicago_crimes TO 'chicago_crimes.csv' DELIMITER ',' CSV HEADER;
