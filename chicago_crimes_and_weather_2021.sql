@@ -458,7 +458,7 @@ non_domestic_violence|domestic_violence|
 ---------------------+-----------------+
                 78.20|            21.80|
                 
--- Display how many crimes were reported on a monthly basis in chronological order.  What is the month to month change of crimes reported?
+-- Display how many crimes were reported on a monthly basis in chronological order.  What is the month to month percentage change of crimes reported?
  
  
 SELECT
