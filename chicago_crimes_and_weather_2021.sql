@@ -495,28 +495,39 @@ December   |   14258|        -16.00|
 
 -- Display the most consecutive days where a homicide occured and the timeframe.
 
+
+WITH get_all_dates AS (
+	-- Get only one date per homicide
+	SELECT DISTINCT ON (crime_date::date)
+		crime_date::date AS c_date
+	FROM
+		chicago_crimes
+	WHERE
+		crime_type = 'homicide'
+),
+get_diff AS (
+	SELECT 
+		c_date,
+		row_number() OVER () AS rn,
+		c_date - row_number() OVER ()::int AS diff
+	from
+		get_all_dates
+),
+get_diff_count AS (
+	SELECT
+		c_date,
+		count(*) over(PARTITION BY diff) AS diff_count
+	from
+		get_diff
+	GROUP BY
+		c_date,
+		diff
+)
 SELECT
 	max(diff_count) AS most_consecutive_days,
 	min(c_date) || ' to ' || max(c_date) AS time_frame
 from
-	(SELECT
-		c_date,
-		count(*) over(PARTITION BY diff) AS diff_count
-	from
-		(SELECT 
-			c_date,
-			row_number() OVER () AS rn,
-			c_date - row_number() OVER ()::int AS diff
-		from
-			(SELECT DISTINCT ON (crime_date::date)
-				crime_date::date AS c_date
-			FROM
-				chicago_crimes
-			WHERE
-				crime_type = 'homicide') AS tmp) AS tmp2
-	GROUP BY
-		c_date,
-		diff) AS tmp3
+	get_diff_count
 WHERE diff_count > 40
 		
 
