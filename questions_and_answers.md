@@ -1,18 +1,24 @@
+# Chicago Crime & Weather 2021
+## Questions and Answers
+#### by jaime.m.shaker@gmail.com
 
 
--- How many total crimes were reported in 2021?
+#### How many total crimes were reported in 2021?
 
+````sql
 SELECT count(crime_id) AS "total reported crimes"
 FROM crimes;
+````
 
--- Results:
+**Results:**
 
 Total Reported Crimes|
----------------------+
-               202536|
+---------------------|
+202536|
 
--- What is the count of Homicides, Battery and Assaults reported?
+#### What is the count of Homicides, Battery and Assaults reported?
 
+````sql
 SELECT 
 	crime_type,
 	count(*) AS n_crimes
@@ -24,17 +30,19 @@ group BY
 	crime_type
 order BY 
 	n_crimes DESC;
+````
 
--- Results:
+**Results:**
 
 crime_type|n_crimes|
-----------+--------+
+----------|--------|
 battery   |   39988|
 assault   |   20086|
 homicide  |     803|
 
--- Create a temp table that joins data from all three tables
+#### Create a temp table that joins data from all three tables
 
+````sql
 DROP TABLE IF EXISTS chicago_crimes;
 CREATE TEMP TABLE chicago_crimes AS (
 	SELECT
@@ -64,25 +72,28 @@ CREATE TEMP TABLE chicago_crimes AS (
 );
 
 SELECT * FROM chicago_crimes LIMIT 10;
+````
 
--- Results:
+**Results:**
 
 crime_id|crime_date             |crime_type       |crime_description      |location_description|street_name      |community_name|population|area_size|density |arrest|domestic|temp_high|temp_low|precipitation|
---------+-----------------------+-----------------+-----------------------+--------------------+-----------------+--------------+----------+---------+--------+------+--------+---------+--------+-------------+
-       1|2021-01-03 13:23:00.000|battery          |domestic battery simple|apartment           | eggleston ave   |englewood     |     24369|     3.07| 7937.79|false |true    |       33|      26|         0.01|
-       2|2021-01-03 06:59:00.000|theft            |$500 and under         |residence           | yale ave        |chatham       |     31710|     2.95|10749.15|false |false   |       33|      26|         0.01|
-       3|2021-01-03 00:20:00.000|battery          |domestic battery simple|apartment           | washington blvd |austin        |     96557|     7.15|13504.48|false |true    |       33|      26|         0.01|
-       4|2021-01-03 20:47:00.000|narcotics        |possess - cocaine      |street              | racine ave      |west englewood|     29647|     3.15| 9411.75|true  |false   |       33|      26|         0.01|
-       5|2021-01-03 20:09:00.000|homicide         |first degree murder    |street              | stony island ave|south shore   |     53971|     2.93|18420.14|false |false   |       33|      26|         0.01|
-       6|2021-01-03 08:54:00.000|assault          |simple                 |cha apartment       | yates ave       |south deering |     14105|     10.9| 1294.04|false |false   |       33|      26|         0.01|
-       7|2021-01-03 16:30:00.000|theft            |$500 and under         |apartment           | taylor st       |near west side|     67881|     5.69|11929.88|true  |true    |       33|      26|         0.01|
-       8|2021-01-03 23:47:00.000|weapons violation|unlawful use - handgun |street              | 69th st         |south shore   |     53971|     2.93|18420.14|false |false   |       33|      26|         0.01|
-       9|2021-01-03 22:30:00.000|criminal damage  |to property            |residence - garage  | thome ave       |edgewater     |     56296|     1.74|32354.02|false |false   |       33|      26|         0.01|
-      10|2021-01-03 01:00:00.000|criminal trespass|to vehicle             |street              | blackstone ave  |hyde park     |     29456|     1.61|18295.65|false |false   |       33|      26|         0.01|
+--------|-----------------------|-----------------|-----------------------|--------------------|-----------------|--------------|----------|---------|--------|------|--------|---------|--------|-------------|
+1|2021-01-03 13:23:00.000|battery          |domestic battery simple|apartment           | eggleston ave   |englewood     |     24369|     3.07| 7937.79|false |true    |       33|      26|         0.01|
+2|2021-01-03 06:59:00.000|theft            |$500 and under         |residence           | yale ave        |chatham       |     31710|     2.95|10749.15|false |false   |       33|      26|         0.01|
+3|2021-01-03 00:20:00.000|battery          |domestic battery simple|apartment           | washington blvd |austin        |     96557|     7.15|13504.48|false |true    |       33|      26|         0.01|
+4|2021-01-03 20:47:00.000|narcotics        |possess - cocaine      |street              | racine ave      |west englewood|     29647|     3.15| 9411.75|true  |false   |       33|      26|         0.01|
+5|2021-01-03 20:09:00.000|homicide         |first degree murder    |street              | stony island ave|south shore   |     53971|     2.93|18420.14|false |false   |       33|      26|         0.01|
+6|2021-01-03 08:54:00.000|assault          |simple                 |cha apartment       | yates ave       |south deering |     14105|     10.9| 1294.04|false |false   |       33|      26|         0.01|
+7|2021-01-03 16:30:00.000|theft            |$500 and under         |apartment           | taylor st       |near west side|     67881|     5.69|11929.88|true  |true    |       33|      26|         0.01|
+8|2021-01-03 23:47:00.000|weapons violation|unlawful use - handgun |street              | 69th st         |south shore   |     53971|     2.93|18420.14|false |false   |       33|      26|         0.01|
+9|2021-01-03 22:30:00.000|criminal damage  |to property            |residence - garage  | thome ave       |edgewater     |     56296|     1.74|32354.02|false |false   |       33|      26|         0.01|
+10|2021-01-03 01:00:00.000|criminal trespass|to vehicle             |street              | blackstone ave  |hyde park     |     29456|     1.61|18295.65|false |false   |       33|      26|         0.01|
 
--- What are the top ten communities that had the most crimes reported?
--- We will also add the current population to see if area density is also a factor.
 
+#### What are the top ten communities that had the most crimes reported?
+##### We will also add the current population to see if area density is also a factor.
+
+````sql
 SELECT 
 	community_name AS community,
 	population,
@@ -95,11 +106,12 @@ group BY
 	density
 ORDER BY reported_crimes DESC
 LIMIT 10;
+````
 
--- Results:
+**Results:**
 
 community             |population|density |reported_crimes|
-----------------------+----------+--------+---------------+
+----------------------|----------|--------|---------------|
 austin                |     96557|13504.48|          11341|
 near north side       |    105481|38496.72|           8126|
 south shore           |     53971|18420.14|           7272|
@@ -111,9 +123,10 @@ greater grand crossing|     31471| 8865.07|           5545|
 west town             |     87781|19166.16|           5486|
 loop                  |     42298|25635.15|           5446|
 
--- What are the top ten communities that had the least amount of crimes reported?
--- We will also add the current population to see if area density is also a factor.
+#### What are the top ten communities that had the least amount of crimes reported?
+##### We will also add the current population to see if area density is also a factor.
 
+````sql
 SELECT 
 	community_name AS community,
 	population,
@@ -126,11 +139,12 @@ group BY
 	density
 ORDER BY reported_crimes
 LIMIT 10;
+````
 
--- Results:
+**Results:**
 
 community      |population|density |Reported Crimes|
----------------+----------+--------+---------------+
+---------------|----------|--------|---------------|
 edison park    |     11525|10199.12|            238|
 burnside       |      2527| 4142.62|            321|
 forest glen    |     19596| 6123.75|            460|
@@ -142,9 +156,9 @@ hegewisch      |     10027| 1913.55|            598|
 archer heights |     14196| 7062.69|            653|
 north park     |     17559| 6967.86|            679|
 
+#### What month had the most crimes reported?
 
--- What month had the most crimes reported?
-
+````sql
 SELECT
 	to_char(CRIME_DATE::timestamp, 'Month') AS month,
 	COUNT(*) AS n_crimes
@@ -154,11 +168,12 @@ GROUP BY
 	month
 ORDER BY
 	n_crimes DESC;
+````
 
--- Results:
+**Results:**
 
 month    |n_crimes|
----------+--------+
+---------|--------|
 October  |   19018|
 September|   18987|
 July     |   18966|
@@ -172,8 +187,9 @@ April    |   15305|
 December |   14258|
 February |   12888|
 
--- What month had the most homicides and what was the average temperature?
+#### What month had the most homicides and what was the average temperature?
 
+````sql
 SELECT
 	to_char(CRIME_DATE::timestamp, 'Month') AS month,
 	COUNT(*) AS n_homicides,
@@ -185,12 +201,12 @@ GROUP BY
 	month
 ORDER BY
 	n_homicides DESC;
+````
 
-
--- Results:
+**Results:**
 
 month    |n_homicides|avg_high_temp|
----------+-----------+-------------+
+---------|-----------|-------------|
 July     |        112|         82.6|
 September|         89|         80.8|
 June     |         85|         83.5|
@@ -204,8 +220,9 @@ December |         52|         48.6|
 March    |         45|         54.7|
 February |         38|         27.0|
 
--- What weekday were most crimes committed?
+#### What weekday were most crimes committed?
 
+````sql
 SELECT
 	to_char(CRIME_DATE::timestamp, 'Day') AS day_of_week,
 	COUNT(*) AS n_crimes
@@ -215,11 +232,12 @@ GROUP BY
 	day_of_week
 ORDER BY
 	n_crimes DESC;
+````
 
--- Results:
+**Results:**
 
 day_of_week|n_crimes|
------------+--------+
+-----------|--------|
 Saturday   |   29841|
 Friday     |   29829|
 Sunday     |   29569|
@@ -228,8 +246,9 @@ Wednesday  |   28143|
 Tuesday    |   28135|
 Thursday   |   27825|
 
--- What are the top ten city streets that have had the most reported crimes?
+#### What are the top ten city streets that have had the most reported crimes?
 
+````sql
 SELECT
 	street_name,
 	count(*) AS n_crimes
@@ -240,11 +259,12 @@ GROUP BY
 ORDER BY
 	count(*) DESC
 LIMIT 10;
+````
 
--- Results:
+**Results:**
 
 street_name                 |n_crimes|
-----------------------------+--------+
+----------------------------|--------|
  michigan ave               |    3257|
  state st                   |    2858|
  halsted st                 |    2329|
@@ -256,8 +276,9 @@ street_name                 |n_crimes|
  kedzie ave                 |    1606|
  madison st                 |    1584|
 
--- What are the top ten city streets that have had the most homicides?
+#### What are the top ten city streets that have had the most homicides including ties?
 
+````sql
  SELECT
  	street_name,
  	n_homicides
@@ -276,11 +297,12 @@ street_name                 |n_crimes|
 		count(*) DESC) AS tmp
 WHERE 
 	rnk <= 10;
+````
 
--- Results:
+**Results:**
 
 street_name                 |n_homicides|
-----------------------------+-----------+
+----------------------------|-----------|
  79th st                    |         14|
  madison st                 |         14|
  morgan st                  |         10|
@@ -295,8 +317,9 @@ street_name                 |n_homicides|
  emerald ave                |          7|
  polk st                    |          7|
 
--- What are the top ten city streets that have had the most burglaries?
+#### What are the top ten city streets that have had the most burglaries?
 
+````sql
 SELECT
 	street_name,
 	count(*) AS n_burglaries
@@ -309,11 +332,12 @@ group BY
 ORDER BY
 	n_burglaries DESC
 LIMIT 10;
+````
 
--- Results:
+**Results:**
 
 street_name                 |n_burglaries|
-----------------------------+------------+
+----------------------------|------------|
  ashland ave                |         104|
  halsted st                 |         103|
  michigan ave               |          92|
@@ -324,9 +348,11 @@ street_name                 |n_burglaries|
  dr martin luther king jr dr|          50|
  79th st                    |          48|
  sheridan rd                |          45|
- 
- -- What was the number of reported crimes on the hottest day of the year vs the coldest?
 
+
+#### What was the number of reported crimes on the hottest day of the year vs the coldest?
+
+````sql
 WITH hottest AS (
 	SELECT
 	  	temp_high,
@@ -358,17 +384,19 @@ SELECT
 	c.temp_high,
 	c.n_crimes
 FROM 
-	coldest AS c
-	
--- Results:
-	
-temp_high|n_crimes|
----------+--------+
-       95|     552|
-        4|     402|
+	coldest AS c;
+````
 
--- What is the number and types of reported crimes on Michigan Ave?	
-	
+**Results:**
+
+temp_high|n_crimes|
+---------|--------|
+95|     552|
+4|     402|
+
+#### What is the number and types of reported crimes on Michigan Ave (The Rodeo Drive of the Midwest)?
+
+````sql
 SELECT
 	crime_type,
 	count(*) AS michigan_ave_crimes
@@ -379,12 +407,13 @@ WHERE
 GROUP BY 
 	crime_type
 ORDER BY 
-	michigan_ave_crimes desc
+	michigan_ave_crimes desc;
+````
 
--- Results:
-	
+**Results:**
+
 crime_type                       |michigan_ave_crimes|
----------------------------------+-------------------+
+---------------------------------|-------------------|
 theft                            |                923|
 battery                          |                564|
 assault                          |                324|
@@ -410,8 +439,9 @@ arson                            |                  1|
 intimidation                     |                  1|
 concealed carry license violation|                  1|
 
--- What are the top 5 least reported crime, how many arrests were made and the percentage of arrests made?
+#### What are the top 5 least reported crime, how many arrests were made and the percentage of arrests made?
 
+````sql
 SELECT
 	crime_type,
 	least_amount,
@@ -429,20 +459,22 @@ from
 	GROUP BY 
 		crime_type
 	ORDER BY least_amount
-	LIMIT 5) AS tmp
+	LIMIT 5) AS tmp;
+````
 
--- Results:
-	
+**Results:**
+
 crime_type              |least_amount|arrest_count|arrest_percentage|
-------------------------+------------+------------+-----------------+
+------------------------|------------|------------|-----------------|
 other narcotic violation|           2|           1|             50.0|
 non-criminal            |           4|           1|             25.0|
 public indecency        |           4|           4|            100.0|
 human trafficking       |          12|           0|              0.0|
 gambling                |          13|          11|             85.0|
 
--- What is the percentage of domestic violence crimes?
+#### What is the percentage of domestic violence crimes?
 
+````sql
 SELECT
 	100 - n_domestic_perc AS non_domestic_violence,
 	n_domestic_perc AS domestic_violence
@@ -451,16 +483,17 @@ from
 		round(100 * (SELECT count(*) FROM chicago_crimes WHERE domestic = true)::numeric / count(*), 2) AS n_domestic_perc
 	FROM 
 		chicago_crimes) AS tmp
+````
 
--- Results:
-		
+**Results:**
+
 non_domestic_violence|domestic_violence|
----------------------+-----------------+
-                78.20|            21.80|
-                
--- Display how many crimes were reported on a monthly basis in chronological order.  What is the month to month percentage change of crimes reported?
- 
- 
+---------------------|-----------------|
+78.20|            21.80|
+
+#### Display how many crimes were reported on a monthly basis in chronological order.  What is the month to month percentage change of crimes reported?
+
+````sql
 SELECT
 	crime_month,
 	n_crimes,
@@ -475,11 +508,12 @@ FROM
 		crime_month
 	ORDER BY
 		to_date(to_char(crime_date, 'Month'), 'Month')) AS tmp
-		
--- Results:
-		
+````
+
+**Results:**
+
 crime_month|n_crimes|month_to_month|
------------+--------+--------------+
+-----------|--------|--------------|
 January    |   16038|              |
 February   |   12888|        -19.64|
 March      |   15742|         22.14|
@@ -493,9 +527,9 @@ October    |   19018|          0.16|
 November   |   16974|        -10.75|
 December   |   14258|        -16.00|
 
--- Display the most consecutive days where a homicide occured and the timeframe.
+#### Display the most consecutive days where a homicide occured and the timeframe.
 
-
+````sql
 WITH get_all_dates AS (
 	-- Get only one date per homicide
 	SELECT DISTINCT ON (crime_date::date)
@@ -528,26 +562,25 @@ SELECT
 	min(c_date) || ' to ' || max(c_date) AS time_frame
 from
 	get_diff_count
-WHERE diff_count > 40
+WHERE diff_count > 40;
+````
 
--- Results:
+**Results:**
 
 most_consecutive_days|time_frame              |
----------------------+------------------------+
-                   43|2021-06-17 to 2021-07-29|
-		
+---------------------|------------------------|
+43|2021-06-17 to 2021-07-29|
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-		
-		
- 	
- 
---COPY chicago_crimes TO 'chicago_crimes.csv' DELIMITER ',' CSV HEADER;
+
+
+
+
+
+
+
+
+
+
+
+
+
