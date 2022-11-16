@@ -44,7 +44,7 @@ COPY CRIMES (
 	COMMUNITY_ID,
 	LATITUDE,
 	LONGITUDE)
-FROM 'C:\Users\Jaime\Desktop\git-repo\chicago_crime_and_weather_2021\csv\chicago_crimes_2021.csv'
+FROM 'path/to/chicago_crimes_2021.csv'
 DELIMITER ',' CSV HEADER;
 
 COPY COMMUNITY (
@@ -53,7 +53,7 @@ COPY COMMUNITY (
 	POPULATION, 
 	AREA_SIZE, 
 	DENSITY)
-FROM 'C:\Users\Jaime\Desktop\git-repo\chicago_crime_and_weather_2021\csv\chicago_areas.csv'
+FROM 'path/to/chicago_areas.csv'
 DELIMITER ',' CSV HEADER;
 
 COPY WEATHER (
@@ -61,5 +61,5 @@ COPY WEATHER (
 	TEMP_HIGH, 
 	TEMP_LOW, 
 	PRECIPITATION)
-FROM 'C:\Users\Jaime\Desktop\git-repo\chicago_crime_and_weather_2021\csv\chicago_temps_2021.csv'
+FROM 'path/to/chicago_temps_2021.csv'
 DELIMITER ',' CSV HEADER;
