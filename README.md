@@ -1,7 +1,7 @@
 # chicago_crime_and_weather_2021
 
 ## Introduction
-A simple analysis using Chicago crime and average daily temperature data for 2021.
+An SQL analysis of reported crimes in Chicago and the average daily temperature in 2021.
 
 * [Data Analysis Question & Answers](https://github.com/iweld/chicago_crime_and_weather_2021/blob/main/questions_and_answers.md)
 
