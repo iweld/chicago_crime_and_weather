@@ -615,6 +615,39 @@ restaurant                            |                      3650|        2025| 
 residence - porch / hallway           |                      2932|        1500|        1432|
 gas station                           |                      2921|        1562|        1359|
 
+#### What is the Month, day of the week and the number of homicides that occured in a babershop or beauty salon?
+
+````sql
+SELECT
+	DISTINCT location_description,
+	crime_type,
+	to_char(crime_date, 'Month') AS crime_month,
+	to_char(crime_date, 'Day') AS crime_day,
+	count(*) AS incident_count
+FROM
+	chicago_crimes
+WHERE
+	location_description LIKE '%barber%'
+AND 
+	crime_type = 'homicide'
+GROUP BY 
+	location_description,
+	crime_month,
+	crime_day,
+	crime_type
+ORDER BY
+	incident_count DESC;
+````
+
+**Results:**
+
+location_description    |crime_type|crime_month|crime_day|incident_count|
+------------------------|----------|-----------|---------|--------------|
+barber shop/beauty salon|homicide  |July       |Wednesday|             2|
+barber shop/beauty salon|homicide  |November   |Tuesday  |             2|
+barber shop/beauty salon|homicide  |April      |Friday   |             1|
+barber shop/beauty salon|homicide  |August     |Sunday   |             1|
+barber shop/beauty salon|homicide  |January    |Thursday |             1|
 
 
 
