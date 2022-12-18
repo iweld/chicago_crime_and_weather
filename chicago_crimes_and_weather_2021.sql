@@ -172,12 +172,13 @@ April    |   15305|
 December |   14258|
 February |   12888|
 
--- What month had the most homicides and what was the average temperature?
+-- What month had the most homicides and what was the average and median temperature?
 
 SELECT
 	to_char(CRIME_DATE::timestamp, 'Month') AS month,
 	COUNT(*) AS n_homicides,
-	round(avg(temp_high), 1) AS avg_high_temp
+	round(avg(temp_high), 1) AS avg_high_temp,
+	PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY temp_high) AS median_temp
 FROM
 	chicago_crimes
 WHERE crime_type = 'homicide'
@@ -189,20 +190,20 @@ ORDER BY
 
 -- Results:
 
-month    |n_homicides|avg_high_temp|
----------+-----------+-------------+
-July     |        112|         82.6|
-September|         89|         80.8|
-June     |         85|         83.5|
-August   |         81|         85.3|
-May      |         66|         73.9|
-October  |         64|         67.9|
-November |         62|         50.6|
-January  |         55|         34.1|
-April    |         54|         65.1|
-December |         52|         48.6|
-March    |         45|         54.7|
-February |         38|         27.0|
+month    |n_homicides|avg_high_temp|median_temp|
+---------+-----------+-------------+-----------+
+July     |        112|         82.6|       82.0|
+September|         89|         80.8|       82.0|
+June     |         85|         83.5|       82.0|
+August   |         81|         85.3|       85.0|
+May      |         66|         73.9|       75.5|
+October  |         64|         67.9|       71.0|
+November |         62|         50.6|       51.0|
+January  |         55|         34.1|       34.0|
+April    |         54|         65.1|       62.0|
+December |         52|         48.6|       49.0|
+March    |         45|         54.7|       52.0|
+February |         38|         27.0|       26.0|
 
 -- What weekday were most crimes committed?
 
@@ -537,11 +538,46 @@ most_consecutive_days|time_frame              |
                    43|2021-06-17 to 2021-07-29|
 		
 
+-- What are the top 10 most common locations for reported crimes and their frequency depending on the season?                  
+                   
+SELECT
+	location_description,
+	count(*) AS location_description_count,
+	sum(
+		CASE
+			WHEN crime_date::date >= '2021-04-15' AND crime_date::date <= '2021-10-15' THEN 1
+			ELSE 0
+		END) AS mild_weather,
+	sum(
+		CASE
+			WHEN crime_date::date >= '2021-01-01' AND crime_date::date < '2021-04-15' THEN 1
+			WHEN crime_date::date > '2021-10-15' AND crime_date::date <= '2021-12-31' THEN 1
+			ELSE 0
+		END) AS cold_weather
+FROM
+	chicago_crimes
+WHERE
+	location_description IS NOT NULL
+GROUP BY
+	location_description
+ORDER BY 
+	location_description_count DESC
+LIMIT 10;
 	
-	
-	
-	
-	
+-- Results:
+
+location_description                  |location_description_count|mild_weather|cold_weather|
+--------------------------------------+--------------------------+------------+------------+
+street                                |                     51310|       28308|       23002|
+apartment                             |                     43253|       22823|       20430|
+residence                             |                     31081|       15923|       15158|
+sidewalk                              |                     11687|        7083|        4604|
+parking lot / garage (non residential)|                      6324|        3497|        2827|
+small retail store                    |                      5300|        2773|        2527|
+alley                                 |                      4694|        2647|        2047|
+restaurant                            |                      3650|        2025|        1625|
+residence - porch / hallway           |                      2932|        1500|        1432|
+gas station                           |                      2921|        1562|        1359|
 	
 	
 	
