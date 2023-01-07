@@ -1,5 +1,5 @@
 
-## Excel & Google Sheets
+## Excel & Google Sheets SQL Output
 I have uploaded an Excel file with the results of the most common SQL queries in my SQL Analysis.
 
 - Number of days with consecutive Homicides.
