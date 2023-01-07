@@ -5,6 +5,10 @@ An SQL analysis of reported crimes in Chicago and the average daily temperature 
 
 * [Data Analysis Question & Answers](https://github.com/iweld/chicago_crime_and_weather_2021/blob/main/questions_and_answers.md)
 
+Download Excel/Google Sheets with the most common SQL queries output.
+
+* [Excel/Google Sheets SQL Queries Output](https://github.com/iweld/chicago_crime_and_weather_2021/tree/main/excel)
+
 ## Datasets used
 Three key [datasets](https://github.com/iweld/chicago_crime_and_weather_2021/tree/main/csv) for this case study
 - <strong>chicago_areas.csv</strong>: Chicago neighborhoods and areas.

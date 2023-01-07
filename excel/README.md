@@ -15,6 +15,7 @@ I have uploaded an Excel file with the results of the most common SQL queries in
 - Number of homicides per month and avg temperatures.
 
 If you prefer google sheets, you can access the file using the link below.
+
 [Google Sheets: Chicago Crimes & Weather](https://docs.google.com/spreadsheets/d/1DgvBf4qHs3Ctqh5rkmcKR3MCn_ncACFCXCpI-ym6mok/edit?usp=sharing)
 
 Using this Excel/Sheets file, visualizations can be easily created using Excel, Google Sheets, Tableau and/or PowerBI.
