@@ -221,6 +221,8 @@ December |         52|         48.6|       49.0|
 March    |         45|         54.7|       52.0|
 February |         38|         27.0|       26.0|
 
+![Monthly Homicide Bar Chart](https://github.com/iweld/chicago_crime_and_weather_2021/blob/main/img/bar_monthly_homicide.PNG)
+
 #### What weekday were most crimes committed?
 
 ````sql
