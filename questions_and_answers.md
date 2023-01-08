@@ -494,6 +494,10 @@ non_domestic_violence|domestic_violence|
 ---------------------|-----------------|
 78.20|            21.80|
 
+![Domestic Violence Percdentage Bar Chart](https://github.com/iweld/chicago_crime_and_weather_2021/blob/main/img/bar_domestic_violence.PNG)
+
+
+
 #### Display how many crimes were reported on a monthly basis in chronological order.  What is the month to month percentage change of crimes reported?
 
 ````sql
