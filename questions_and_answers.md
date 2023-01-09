@@ -187,6 +187,8 @@ April    |   15305|
 December |   14258|
 February |   12888|
 
+![Highest monthly crimes reported Chart](https://github.com/iweld/chicago_crime_and_weather_2021/blob/main/img/line_mild_to_cold.PNG)
+
 #### What month had the most homicides and what was the average and median temperature?
 
 ````sql
