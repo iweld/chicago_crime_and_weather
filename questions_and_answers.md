@@ -251,6 +251,8 @@ Wednesday  |   28143|
 Tuesday    |   28135|
 Thursday   |   27825|
 
+![Day of the Week totals Bar Chart](https://github.com/iweld/chicago_crime_and_weather_2021/blob/main/img/bar_day_of_week_totals.PNG)
+
 #### What are the top ten city streets that have had the most reported crimes?
 
 ````sql
