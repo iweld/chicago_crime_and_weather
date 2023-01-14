@@ -401,6 +401,8 @@ temp_high|n_crimes|
 95|     552|
 4|     402|
 
+![Hottest vs Coldest Day Bar Chart](https://github.com/iweld/chicago_crime_and_weather_2021/blob/main/img/bar_hot_vs_cold.PNG)
+
 #### What is the number and types of reported crimes on Michigan Ave (The Rodeo Drive of the Midwest)?
 
 ````sql
