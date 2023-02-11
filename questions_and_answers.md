@@ -1,6 +1,13 @@
 # Chicago Crime & Weather 2021
 ## Questions and Answers
-#### by jaime.m.shaker@gmail.com
+
+**Author**: Jaime M. Shaker
+
+**Email**: jaime.m.shaker@gmail.com
+
+**Website**: https://www.shaker.dev
+
+**LinkedIn**: https://www.linkedin.com/in/jaime-shaker/
 
 
 #### How many total crimes were reported in 2021?
