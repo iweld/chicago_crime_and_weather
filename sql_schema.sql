@@ -32,6 +32,9 @@ CREATE TABLE WEATHER (
 	PRIMARY KEY (WEATHER_DATE));
 	
 -- Copy and insert data from csv files to tables.
+-- If you are using Docker, you must copy the CSV to the docker container.
+-- Example: $ docker cp ./csv/chicago_areas.csv your-container-name-postgres-1:/tmp
+
 
 COPY CRIMES (
 	CRIME_DATE,
@@ -44,7 +47,7 @@ COPY CRIMES (
 	COMMUNITY_ID,
 	LATITUDE,
 	LONGITUDE)
-FROM 'path/to/chicago_crimes_2021.csv'
+FROM '/tmp/chicago_crimes_2021.csv'
 DELIMITER ',' CSV HEADER;
 
 COPY COMMUNITY (
@@ -53,7 +56,7 @@ COPY COMMUNITY (
 	POPULATION, 
 	AREA_SIZE, 
 	DENSITY)
-FROM 'path/to/chicago_areas.csv'
+FROM '/tmp/chicago_areas.csv'
 DELIMITER ',' CSV HEADER;
 
 COPY WEATHER (
@@ -61,5 +64,5 @@ COPY WEATHER (
 	TEMP_HIGH, 
 	TEMP_LOW, 
 	PRECIPITATION)
-FROM 'path/to/chicago_temps_2021.csv'
+FROM '/tmp/chicago_temps_2021.csv'
 DELIMITER ',' CSV HEADER;
