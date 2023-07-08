@@ -1,0 +1,21 @@
+version: '3.3'
+services:
+  postgres:
+    image: postgres:13.2
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: chicago_crime_weather
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      -
+        type: bind
+        source: ./db
+        target: /var/lib/postgresql/data
+    networks:
+      - reference
+networks:
+  reference:
