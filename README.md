@@ -1,20 +1,26 @@
-# chicago_crime_and_weather_2021
+# Chicago Crime and Weather
+
+**Author**: Jaime M. Shaker <br />
+**Email**: jaime.m.shaker@gmail.com <br />
+**Website**: https://www.shaker.dev <br />
+**LinkedIn**: https://www.linkedin.com/in/jaime-shaker/  <br />
 
 ## Introduction
-An SQL analysis of reported crimes in Chicago and the average daily temperature in 2021.
+An SQL analysis of reported crimes in the city of Chicago and the average daily temperature between 2018 and 2022.
 
-* [Data Analysis Question & Answers](https://github.com/iweld/chicago_crime_and_weather_2021/blob/main/questions_and_answers.md)
-
-Download Excel/Google Sheets with the most common SQL queries output.
-
-* [Excel/Google Sheets SQL Queries Output](https://github.com/iweld/chicago_crime_and_weather_2021/tree/main/excel)
+* [Data Analysis Question & Answers](QUESTIONS_AND_ANSWERS.md)
 
 ## Datasets used
-Three key [datasets](https://github.com/iweld/chicago_crime_and_weather_2021/tree/main/csv) for this case study
+Seven key [datasets](./source_data/csv/) for this case study
 - <strong>chicago_areas.csv</strong>: Chicago neighborhoods and areas.
-- <strong>chicago_crimes_2021.csv</strong>: Reported crimes in 2021.
-- <strong>chicago_temps_2021.csv</strong>: Average city temperatures.
+- <strong>chicago_temps_18-22.csv</strong>: City Weather 2018-2022.
+- <strong>chicago_crime_2018.csv</strong>: Reported crimes in 2018.
+- <strong>chicago_crime_2019.csv</strong>: Reported crimes in 2019.
+- <strong>chicago_crime_2020.csv</strong>: Reported crimes in 2020.
+- <strong>chicago_crime_2021.csv</strong>: Reported crimes in 2021.
+- <strong>chicago_crime_2022.csv</strong>: Reported crimes in 2022.
+
 
 ## Entity Relationship Diagram
-![alt text](https://github.com/iweld/chicago_crime_and_weather_2021/blob/main/ERD.JPG)
+![alt text](./images/ERD.PNG)
 

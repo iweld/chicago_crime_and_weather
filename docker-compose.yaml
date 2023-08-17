@@ -1,8 +1,10 @@
-version: '3.3'
+version: '3.8'
 services:
   postgres:
-    image: postgres:13.2
+    image: postgres
+    container_name: chicago_crime_weather
     restart: unless-stopped
+     #- .env
     environment:
       POSTGRES_DB: chicago_crime_weather
       POSTGRES_USER: postgres
@@ -15,6 +17,10 @@ services:
         type: bind
         source: ./db
         target: /var/lib/postgresql/data
+      -
+        type: bind
+        source: ./source_data
+        target: /var/lib/postgresql/source_data
     networks:
       - reference
 networks:
