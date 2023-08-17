@@ -14,22 +14,22 @@ Total Reported Crimes|
 -- What is the count of Homicides, Battery and Assaults reported?
 
 SELECT 
-	primary_type AS crime_type,
+	initcap(crime_type) AS crime_type,
 	count(*) AS n_crimes
 FROM 
 	chicago.crimes
 WHERE 
-	primary_type IN ('homicide', 'battery', 'assault')
-group BY 
+	crime_type IN ('homicide', 'battery', 'assault')
+GROUP BY 
 	crime_type
-order BY 
+ORDER BY 
 	n_crimes DESC;
 
 -- Results:
 
 crime_type|n_crimes|
 ----------+--------+
-battery   |  222214|
-assault   |  100411|
-homicide  |    3440|
+Battery   |  222214|
+Assault   |  100411|
+Homicide  |    3440|
 

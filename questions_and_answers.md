@@ -26,12 +26,12 @@ Total Reported Crimes|
 
 ````sql
 SELECT 
-	primary_type AS crime_type,
+	initcap(crime_type) AS crime_type,
 	count(*) AS n_crimes
 FROM 
 	chicago.crimes
 WHERE 
-	primary_type IN ('homicide', 'battery', 'assault')
+	crime_type IN ('homicide', 'battery', 'assault')
 GROUP BY 
 	crime_type
 ORDER BY 
@@ -42,9 +42,9 @@ ORDER BY
 
 crime_type|n_crimes|
 ----------|--------|
-battery   |  222214|
-assault   |  100411|
-homicide  |    3440|
+Battery   |  222214|
+Assault   |  100411|
+Homicide  |    3440||
 
 To be continued....
 
