@@ -8,7 +8,7 @@
 ## Introduction
 An SQL analysis of reported crimes in the city of Chicago and the average daily temperature between 2018 and 2022.
 
-* [Data Analysis Question & Answers](./QUESTIONS_AND_ANSWERS.mdQUESTIONS_AND_ANSWERS.md)
+* [Data Analysis Question & Answers](./QUESTIONS_AND_ANSWERS.md)
 
 ## Datasets used
 Seven key [datasets](./source_data/csv/) for this case study
