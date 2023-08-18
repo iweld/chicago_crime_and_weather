@@ -114,3 +114,51 @@ archer heights |     14196| 7062.69|           4011|
 mckinley park  |     15923|11292.91|           4081|
 
 */
+
+-- 5. What month had the most crimes reported and what was the average and median
+-- temperature high in the last five years?
+
+SELECT
+	to_char(cr.reported_crime_date, 'Month') AS month,
+	COUNT(*) AS n_crimes,
+	round(avg(w.temp_high), 1) avg_high_temp,
+	PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY w.temp_high) AS median_high_temp
+FROM
+	chicago.crimes AS cr
+JOIN 
+	chicago.weather AS w
+ON 
+	cr.reported_crime_date = w.weather_date
+GROUP BY
+	month
+ORDER BY
+	n_crimes DESC;
+
+-- Results:
+
+/*
+
+month    |n_crimes|avg_high_temp|median_high_temp|
+---------+--------+-------------+----------------+
+July     |  111328|         85.2|            86.0|
+August   |  110659|         84.3|            85.0|
+October  |  105563|         62.5|            62.0|
+June     |  105163|         81.5|            81.0|
+September|  105075|         77.2|            78.0|
+May      |  103985|         71.8|            72.0|
+December |   96505|         40.6|            41.0|
+November |   95501|         47.6|            47.0|
+March    |   92947|         48.0|            47.0|
+January  |   92018|         32.3|            34.0|
+April    |   88707|         56.7|            55.0|
+February |   82329|         35.3|            35.0|
+
+*/
+
+
+
+
+
+
+
+

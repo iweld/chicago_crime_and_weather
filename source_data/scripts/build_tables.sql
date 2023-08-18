@@ -175,8 +175,8 @@ CREATE SCHEMA IF NOT EXISTS chicago;
 DROP TABLE IF EXISTS chicago.crimes;
 CREATE TABLE chicago.crimes (
 	crime_id int,
-	reported_date_timestamp timestamp NOT NULL,
-	reported_date_date date NOT NULL,
+	reported_crime_timestamp timestamp NOT NULL,
+	reported_crime_date date NOT NULL,
 	city_block TEXT NOT NULL,	
 	crime_type TEXT NOT NULL,	
 	crime_description TEXT NOT NULL,	
@@ -192,8 +192,8 @@ CREATE TABLE chicago.crimes (
 
 INSERT INTO chicago.crimes (
 	crime_id,
-	reported_date_timestamp,
-	reported_date_date,
+	reported_crime_timestamp,
+	reported_crime_date,
 	city_block,
 	crime_type,
 	crime_description,
@@ -312,7 +312,7 @@ ALTER TABLE
 	chicago.crimes
 ADD CONSTRAINT 
 	fk_date_reported
-FOREIGN KEY (reported_date_date)
+FOREIGN KEY (reported_crime_date)
 REFERENCES chicago.weather (weather_date);
 
 -- Drop import schema and tables
