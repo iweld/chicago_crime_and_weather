@@ -159,6 +159,45 @@ January  |   92018|         32.3|            34.0|
 April    |   88707|         56.7|            55.0|
 February |   82329|         35.3|            35.0|
 
+**6.** What month had the most homicides reported and what was the average and median temperature high in the last five years?
+
+````sql
+SELECT
+	to_char(cr.reported_crime_date, 'Month') AS month,
+	COUNT(*) AS n_crimes,
+	round(avg(w.temp_high), 1) avg_high_temp,
+	PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY w.temp_high) AS median_high_temp
+FROM
+	chicago.crimes AS cr
+JOIN 
+	chicago.weather AS w
+ON 
+	cr.reported_crime_date = w.weather_date
+WHERE
+	cr.crime_type = 'homicide'
+GROUP BY
+	month
+ORDER BY
+	n_crimes DESC;
+````
+
+**Results:**
+
+month    |n_crimes|avg_high_temp|median_high_temp|
+---------|--------|-------------|----------------|
+July     |     398|         85.3|            86.0|
+June     |     360|         82.5|            82.0|
+September|     356|         78.1|            79.0|
+August   |     330|         84.6|            85.0|
+May      |     326|         72.7|            73.0|
+October  |     296|         63.8|            64.0|
+April    |     275|         59.3|            58.0|
+November |     263|         49.8|            48.0|
+December |     249|         41.4|            42.0|
+January  |     212|         32.9|            33.0|
+February |     190|         35.0|            37.0|
+March    |     185|         49.3|            48.0|
+
 To be continued....
 
 
