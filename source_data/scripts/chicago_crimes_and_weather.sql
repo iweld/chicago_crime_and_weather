@@ -155,7 +155,7 @@ February |   82329|         35.3|            35.0|
 
 */
 
--- 5. What month had the most homicides reported and what was the average and median
+-- 6. What month had the most homicides reported and what was the average and median
 -- temperature high in the last five years?
 
 SELECT
@@ -197,5 +197,67 @@ March    |     185|         49.3|            48.0|
 
 */
 
+-- 7. List the most violent year and the number of arrests with percentage.  Order by the number of crimes in decending order.  
+-- Determine the most violent year by the number of reported Homicides, Assaults and Battery for that year.
 
+WITH get_arrest_percentage AS (
+	SELECT
+		EXTRACT('year' FROM cr.reported_crime_date) AS most_violent_year,
+		count(*) AS n_crimes,
+		sum(
+			CASE
+				WHEN arrest = TRUE THEN 1
+				ELSE 0
+			END 
+		) AS number_of_arrests
+	FROM
+		chicago.crimes AS cr
+	WHERE 
+		crime_type IN ('homicide', 'battery', 'assault')
+	GROUP BY
+		most_violent_year
+	ORDER BY
+		n_crimes DESC
+)
+SELECT
+	most_violent_year,
+	n_crimes,
+	number_of_arrests || ' (' || 100 * round(number_of_arrests::numeric  / n_crimes, 1) || '%)' AS number_of_arrests
+FROM
+	get_arrest_percentage;
+
+-- Results:
+
+/*
+
+most_violent_year|n_crimes|
+-----------------+--------+
+             2018|   70835|
+             2019|   70645|
+             2022|   62412|
+             2021|   61611|
+             2020|   60562|
+
+*/
+
+WITH get_homicide_rank AS (
+	SELECT
+		city_block,
+		count(*) AS n_homicides,
+		DENSE_RANK() OVER (ORDER BY count(*) DESC) AS rnk
+	FROM
+		chicago.crimes
+	WHERE
+		crime_type = 'homicide'
+	GROUP BY
+		city_block
+	ORDER BY
+		n_homicides DESC
+)
+SELECT
+ 	street_name,
+ 	n_homicides
+FROM 
+WHERE 
+	rnk <= 10;
 

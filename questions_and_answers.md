@@ -198,6 +198,46 @@ January  |     212|         32.9|            33.0|
 February |     190|         35.0|            37.0|
 March    |     185|         49.3|            48.0|
 
+**7.** List the most violent year and the number of arrests with percentage.  Order by the number of crimes in decending order.  Determine the most violent year by the number of reported Homicides, Assaults and Battery for that year.
+
+````sql
+WITH get_arrest_percentage AS (
+	SELECT
+		EXTRACT('year' FROM cr.reported_crime_date) AS most_violent_year,
+		count(*) AS n_crimes,
+		sum(
+			CASE
+				WHEN arrest = TRUE THEN 1
+				ELSE 0
+			END 
+		) AS number_of_arrests
+	FROM
+		chicago.crimes AS cr
+	WHERE 
+		crime_type IN ('homicide', 'battery', 'assault')
+	GROUP BY
+		most_violent_year
+	ORDER BY
+		n_crimes DESC
+)
+SELECT
+	most_violent_year,
+	n_crimes,
+	number_of_arrests || ' (' || 100 * round(number_of_arrests::numeric  / n_crimes, 1) || '%)' AS number_of_arrests
+FROM
+	get_arrest_percentage;
+````
+
+**Results:**
+
+most_violent_year|n_crimes|number_of_arrests|
+-----------------|--------|-----------------|
+2018|   70835|13907 (20.0%)    |
+2019|   70645|14334 (20.0%)    |
+2022|   62412|8165 (10.0%)     |
+2021|   61611|7855 (10.0%)     |
+2020|   60562|9577 (20.0%)     |
+
 To be continued....
 
 
