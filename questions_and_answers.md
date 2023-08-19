@@ -50,7 +50,7 @@ Homicide  |    3440|
 
 ````sql
 SELECT 
-	co.community_name AS community,
+	initcap(co.community_name) AS community,
 	co.population,
 	co.density,
 	count(*) AS reported_crimes
@@ -73,22 +73,22 @@ LIMIT 10;
 
 community      |population|density |reported_crimes|
 ---------------|----------|--------|---------------|
-austin         |     96557|13504.48|          66662|
-near north side|    105481|38496.72|          51977|
-near west side |     67881|11929.88|          41773|
-south shore    |     53971|18420.14|          40984|
-loop           |     42298|25635.15|          40245|
-north lawndale |     34794|10839.25|          39115|
-humboldt park  |     54165|15045.83|          34992|
-auburn gresham |     44878|11903.98|          33680|
-west town      |     87781|19166.16|          32812|
-roseland       |     38816| 8053.11|          30836|
+Austin         |     96557|13504.48|          66662|
+Near North Side|    105481|38496.72|          51977|
+Near West Side |     67881|11929.88|          41773|
+South Shore    |     53971|18420.14|          40984|
+Loop           |     42298|25635.15|          40245|
+North Lawndale |     34794|10839.25|          39115|
+Humboldt Park  |     54165|15045.83|          34992|
+Auburn Gresham |     44878|11903.98|          33680|
+West Town      |     87781|19166.16|          32812|
+Roseland       |     38816| 8053.11|          30836|
 
 **4.** What are the top ten communities that had the LEAST amount of crimes reported?  Include the current population, density and order by the number of reported crimes.
 
 ````sql
 SELECT 
-	co.community_name AS community,
+	initcap(co.community_name) AS community,
 	co.population,
 	co.density,
 	count(*) AS reported_crimes
@@ -111,16 +111,16 @@ LIMIT 10;
 
 community      |population|density |reported_crimes|
 ---------------|----------|--------|---------------|
-edison park    |     11525|10199.12|           1336|
-burnside       |      2527| 4142.62|           1787|
-forest glen    |     19596| 6123.75|           2601|
-mount greenwood|     18628|  6873.8|           2609|
-hegewisch      |     10027| 1913.55|           2861|
-montclare      |     14401|14546.46|           2905|
-oakland        |      6799|11722.41|           3289|
-fuller park    |      2567| 3615.49|           3616|
-archer heights |     14196| 7062.69|           4011|
-mckinley park  |     15923|11292.91|           4081|
+Edison Park    |     11525|10199.12|           1336|
+Burnside       |      2527| 4142.62|           1787|
+Forest Glen    |     19596| 6123.75|           2601|
+Mount Greenwood|     18628|  6873.8|           2609|
+Hegewisch      |     10027| 1913.55|           2861|
+Montclare      |     14401|14546.46|           2905|
+Oakland        |      6799|11722.41|           3289|
+Fuller Park    |      2567| 3615.49|           3616|
+Archer Heights |     14196| 7062.69|           4011|
+Mckinley Park  |     15923|11292.91|           4081|
 
 **5.** What month had the most crimes reported and what was the average and median temperature high in the last five years?
 
