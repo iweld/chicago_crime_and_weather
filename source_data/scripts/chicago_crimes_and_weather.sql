@@ -203,7 +203,7 @@ March    |     185|         49.3|            48.0|
 WITH get_arrest_percentage AS (
 	SELECT
 		EXTRACT('year' FROM cr.reported_crime_date) AS most_violent_year,
-		count(*) AS n_crimes,
+		count(*) AS reported_violent_crimes,
 		sum(
 			CASE
 				WHEN arrest = TRUE THEN 1
@@ -217,12 +217,12 @@ WITH get_arrest_percentage AS (
 	GROUP BY
 		most_violent_year
 	ORDER BY
-		n_crimes DESC
+		reported_violent_crimes DESC
 )
 SELECT
 	most_violent_year,
-	n_crimes,
-	number_of_arrests || ' (' || 100 * number_of_arrests  / n_crimes || '%)' AS number_of_arrests
+	reported_violent_crimes,
+	number_of_arrests || ' (' || 100 * number_of_arrests  / reported_violent_crimes|| '%)' AS number_of_arrests
 FROM
 	get_arrest_percentage;
 
@@ -230,13 +230,13 @@ FROM
 
 /*
 
-most_violent_year|n_crimes|number_of_arrests|
------------------+--------+-----------------+
-             2018|   70835|13907 (20.0%)    |
-             2019|   70645|14334 (20.0%)    |
-             2022|   62412|8165 (10.0%)     |
-             2021|   61611|7855 (10.0%)     |
-             2020|   60562|9577 (20.0%)     |
+most_violent_year|reported_violent_crimes|number_of_arrests|
+-----------------+-----------------------+-----------------+
+             2018|                  70835|13907 (19%)      |
+             2019|                  70645|14334 (20%)      |
+             2022|                  62412|8165 (13%)       |
+             2021|                  61611|7855 (12%)       |
+             2020|                  60562|9577 (15%)       |
 
 */
 
@@ -363,4 +363,70 @@ reported_crime_date|day_of_week|temp_high|precipitation|reported_crimes|
          2018-10-01|Monday     |       72|         1.56|            926|	
 
 */
+
+
+-- 10. List the most consecutive days where a homicide occured and the timeframe.
+
+
+WITH get_homicide_dates AS (
+	-- Get only one date per homicide
+	SELECT 
+		DISTINCT ON (reported_crime_date) reported_crime_date AS homicide_dates
+	FROM
+		chicago.crimes
+	WHERE
+		crime_type = 'homicide'
+),
+get_rn_diff AS (
+	SELECT 
+		homicide_dates,
+		homicide_dates - row_number() OVER ()::int AS diff
+	FROM
+		get_homicide_dates
+),		
+get_diff_count AS (
+	SELECT
+		homicide_dates,
+		count(*) OVER(PARTITION BY diff) AS diff_count
+	FROM
+		get_rn_diff
+	GROUP BY
+		homicide_dates,
+		diff
+)
+SELECT
+	max(diff_count) AS most_consecutive_days,
+	min(homicide_dates) || ' to ' || max(homicide_dates) AS consecutive_days_timeframe
+FROM
+	get_diff_count
+WHERE 
+	diff_count = (SELECT max(diff_count) FROM get_diff_count);	
+
+-- Results:
+
+/*
+
+most_consecutive_days|consecutive_days_timeframe|
+---------------------+--------------------------+
+                   47|2020-06-13 to 2020-07-29  |	
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
