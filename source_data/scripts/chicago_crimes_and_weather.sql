@@ -275,11 +275,92 @@ WHERE
 ORDER BY
 	crime_year;
 
-	
+-- Results:
 
+/*
 
+crime_year|day_of_week|avg_precipitation|n_crimes|
+----------+-----------+-----------------+--------+
+      2018|Monday     |             0.57|   16455|
+      2019|Wednesday  |             0.31|   19411|
+      2020|Wednesday  |             0.29|   11394|
+      2021|Sunday     |             0.30|   10889|
+      2022|Friday     |             0.21|   13029|	
 
+*/
 
+-- 9. List the days with the most reported crimes when there is zero precipitation and
+-- the day when precipitation is greater than .5".  Include the day of the week, high temperature,
+-- amount and precipitation and the total number of reported crimes for that day. 
 
+WITH no_precipitation AS (
+	SELECT
+		cr.reported_crime_date,
+		to_char(cr.reported_crime_date, 'Day') AS day_of_week,
+		w.temp_high,
+		w.precipitation,
+		count(*) AS reported_crimes
+	FROM
+		chicago.crimes AS cr
+	JOIN
+		chicago.weather AS w
+	ON
+		cr.reported_crime_date = w.weather_date
+	WHERE
+		w.precipitation = 0
+	GROUP BY 
+		day_of_week,
+		w.precipitation,
+		temp_high,
+		cr.reported_crime_date
+	ORDER BY
+		reported_crimes DESC
+	LIMIT 
+		1
+),
+yes_precipitation AS (
+	SELECT
+		cr.reported_crime_date,
+		to_char(cr.reported_crime_date, 'Day') AS day_of_week,
+		w.temp_high,
+		w.precipitation,
+		count(*) AS reported_crimes
+	FROM
+		chicago.crimes AS cr
+	JOIN
+		chicago.weather AS w
+	ON
+		cr.reported_crime_date = w.weather_date
+	WHERE
+		w.precipitation > .5
+	GROUP BY 
+		day_of_week,
+		temp_high,
+		w.precipitation,
+		cr.reported_crime_date
+	ORDER BY
+		reported_crimes DESC
+	LIMIT 
+		1
+)
+SELECT
+	*
+FROM no_precipitation
+UNION
+SELECT
+	*
+FROM yes_precipitation
+ORDER BY
+	reported_crimes DESC;
 
+-- Results:
+
+/*
+
+reported_crime_date|day_of_week|temp_high|precipitation|reported_crimes|
+-------------------+-----------+---------+-------------+---------------+
+         2020-05-31|Sunday     |       69|          0.0|           1899|
+         2018-10-01|Monday     |       72|         1.56|            926|	
+
+*/
 
