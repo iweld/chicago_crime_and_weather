@@ -177,7 +177,7 @@ CREATE TABLE chicago.crimes (
 	crime_id int,
 	reported_crime_timestamp timestamp NOT NULL,
 	reported_crime_date date NOT NULL,
-	city_block TEXT NOT NULL,	
+	street_name TEXT NOT NULL,	
 	crime_type TEXT NOT NULL,	
 	crime_description TEXT NOT NULL,	
 	location_description TEXT,	
@@ -194,7 +194,7 @@ INSERT INTO chicago.crimes (
 	crime_id,
 	reported_crime_timestamp,
 	reported_crime_date,
-	city_block,
+	street_name,
 	crime_type,
 	crime_description,
 	location_description,
@@ -209,7 +209,7 @@ INSERT INTO chicago.crimes (
 		c.crime_id,
 		c.date_reported::timestamp,
 		date(c.date_reported::timestamp),
-		trim(lower(c.city_block)),	
+		split_part(trim(lower(c.city_block)), ' ', 3) || ' ' || split_part(trim(lower(c.city_block)), ' ', 4),	
 		trim(lower(c.primary_type)),	
 		trim(lower(c.primary_description)),	
 		trim(lower(c.location_description)),	
@@ -320,8 +320,4 @@ DROP TABLE import_data.crimes;
 DROP TABLE import_data.weather;
 DROP TABLE import_data.community;
 DROP SCHEMA import_data CASCADE;
-
-
-
-
 

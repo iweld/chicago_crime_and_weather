@@ -246,7 +246,7 @@ WITH get_weekday_values AS (
 	SELECT
 		EXTRACT('year' FROM cr.reported_crime_date) AS crime_year,
 		to_char(cr.reported_crime_date, 'Day') AS day_of_week,
-		round(avg(w.precipitation)::numeric, 2) AS avg_precipitation,
+		round(avg(w.precipitation)::NUMERIC, 2) AS avg_precipitation,
 		COUNT(*) AS n_crimes,
 		DENSE_RANK() OVER(PARTITION BY EXTRACT('year' FROM cr.reported_crime_date) ORDER BY count(*) DESC) AS rnk
 	FROM
@@ -266,8 +266,8 @@ WITH get_weekday_values AS (
 SELECT
 	crime_year,
 	day_of_week,
-	n_crimes,
-	avg_precipitation
+	avg_precipitation,
+	n_crimes
 FROM
 	get_weekday_values
 WHERE
@@ -275,7 +275,7 @@ WHERE
 ORDER BY
 	crime_year;
 
-
+	
 
 
 
