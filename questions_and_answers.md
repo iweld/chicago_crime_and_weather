@@ -6,6 +6,8 @@
 **Website**: https://www.shaker.dev <br />
 **LinkedIn**: https://www.linkedin.com/in/jaime-shaker/  <br />
 
+:exclamation: If you find this repository helpful, please consider giving it a :star:. Thanks! :exclamation:
+
 
 **1.**  List the total number of reported crimes between 2018 and 2022?
 
@@ -401,6 +403,8 @@ most_consecutive_days|consecutive_days_timeframe|
 47|2020-06-13 to 2020-07-29  |
 
 To be continued....
+
+:exclamation: If you find this repository helpful, please consider giving it a :star:. Thanks! :exclamation:
 
 
 

@@ -5,6 +5,8 @@
 **Website**: https://www.shaker.dev <br />
 **LinkedIn**: https://www.linkedin.com/in/jaime-shaker/  <br />
 
+:exclamation: If you find this repository helpful, please consider giving it a :star:. Thanks! :exclamation:
+
 ## Introduction
 An SQL analysis of reported crimes in the city of Chicago and the average daily temperature between 2018 and 2022.
 
@@ -23,4 +25,6 @@ Seven key [datasets](./source_data/csv/) for this case study
 
 ## Entity Relationship Diagram
 ![alt text](./images/ERD.PNG)
+
+:exclamation: If you find this repository helpful, please consider giving it a :star:. Thanks! :exclamation:
 
