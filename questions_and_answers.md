@@ -223,7 +223,7 @@ WITH get_arrest_percentage AS (
 SELECT
 	most_violent_year,
 	n_crimes,
-	number_of_arrests || ' (' || 100 * round(number_of_arrests::numeric  / n_crimes, 1) || '%)' AS number_of_arrests
+	number_of_arrests || ' (' || 100 * number_of_arrests  / n_crimes || '%)' AS number_of_arrests
 FROM
 	get_arrest_percentage;
 ````
@@ -232,11 +232,58 @@ FROM
 
 most_violent_year|n_crimes|number_of_arrests|
 -----------------|--------|-----------------|
-2018|   70835|13907 (20.0%)    |
-2019|   70645|14334 (20.0%)    |
-2022|   62412|8165 (10.0%)     |
-2021|   61611|7855 (10.0%)     |
-2020|   60562|9577 (20.0%)     |
+2018|   70835|13907 (19%)      |
+2019|   70645|14334 (20%)      |
+2022|   62412|8165 (13%)       |
+2021|   61611|7855 (12%)       |
+2020|   60562|9577 (15%)       |
+
+**8.** List the day of the week, year, average precipitation and highest number of reported crimes for days with precipitation.
+
+````sql
+WITH get_weekday_values AS (
+	SELECT
+		EXTRACT('year' FROM cr.reported_crime_date) AS crime_year,
+		to_char(cr.reported_crime_date, 'Day') AS day_of_week,
+		round(avg(w.precipitation)::numeric, 2) AS avg_precipitation,
+		COUNT(*) AS n_crimes,
+		DENSE_RANK() OVER(PARTITION BY EXTRACT('year' FROM cr.reported_crime_date) ORDER BY count(*) DESC) AS rnk
+	FROM
+		chicago.crimes AS cr
+	JOIN 
+		chicago.weather AS w
+	ON
+		cr.reported_crime_date = w.weather_date
+	WHERE
+		w.precipitation > 0
+	GROUP BY
+		crime_year,
+		day_of_week
+	ORDER BY
+		n_crimes DESC
+)
+SELECT
+	crime_year,
+	day_of_week,
+	avg_precipitation,
+	n_crimes
+FROM
+	get_weekday_values
+WHERE
+	rnk = 1
+ORDER BY
+	crime_year;
+````
+
+**Results:**
+
+crime_year|day_of_week|avg_precipitation|n_crimes|
+----------|-----------|-----------------|--------|
+2018|Monday     |             0.57|   16455|
+2019|Wednesday  |             0.31|   19411|
+2020|Wednesday  |             0.29|   11394|
+2021|Sunday     |             0.30|   10889|
+2022|Friday     |             0.21|   13029|
 
 To be continued....
 
