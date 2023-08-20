@@ -550,7 +550,55 @@ domestic_crime_year|num_of_crimes|prev_year_count|domestic_yoy|
 
 */
 
+-- 14. Calculate the cumulative Month over Month growth in the number of reported crimes and avergage temperature high.
 
+WITH get_totals AS (
+	SELECT
+		to_char(cr.reported_crime_date, 'Month') AS total_month,
+		COUNT(*) AS n_crimes,
+		round(avg(w.temp_high), 1) AS avg_high_temp
+	FROM
+		chicago.crimes AS cr
+	JOIN 
+		chicago.weather AS w
+	ON 
+		cr.reported_crime_date = w.weather_date
+	GROUP BY
+		total_month
+)
+SELECT
+	total_month,
+	n_crimes,
+	LAG(n_crimes) OVER (ORDER BY TO_DATE(total_month, 'Month')) AS prev_month_count,
+	avg_high_temp,
+	avg_high_temp - LAG(avg_high_temp) OVER (ORDER BY TO_DATE(total_month, 'Month')) AS avg_temp_diff,
+	round (100 * (n_crimes - LAG(n_crimes) OVER (ORDER BY TO_DATE(total_month, 'Month'))) / LAG(n_crimes) OVER (ORDER BY TO_DATE(total_month, 'Month'))::NUMERIC, 2) AS total_crime_growth
+FROM
+	get_totals;
+
+-- Results:
+
+/*
+
+total_month|n_crimes|prev_month_count|avg_high_temp|avg_temp_diff|total_crime_growth|
+-----------+--------+----------------+-------------+-------------+------------------+
+January    |   92018|                |         32.3|             |                  |
+February   |   82329|           92018|         35.3|          3.0|            -10.53|
+March      |   92947|           82329|         48.0|         12.7|             12.90|
+April      |   88707|           92947|         56.7|          8.7|             -4.56|
+May        |  103985|           88707|         71.8|         15.1|             17.22|
+June       |  105163|          103985|         81.5|          9.7|              1.13|
+July       |  111328|          105163|         85.2|          3.7|              5.86|
+August     |  110659|          111328|         84.3|         -0.9|             -0.60|
+September  |  105075|          110659|         77.2|         -7.1|             -5.05|
+October    |  105563|          105075|         62.5|        -14.7|              0.46|
+November   |   95501|          105563|         47.6|        -14.9|             -9.53|
+December   |   96505|           95501|         40.6|         -7.0|              1.05|	
+
+*/
+
+
+	
 
 
 
