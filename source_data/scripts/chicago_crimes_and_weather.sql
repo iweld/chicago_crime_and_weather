@@ -412,11 +412,75 @@ most_consecutive_days|consecutive_days_timeframe|
 
 */
 
+-- 11. What are the top 10 most common locations for reported crimes and the number of reported crime (add percentage) 
+-- depending on the temperature?                  
 
+WITH get_totals AS (
+	SELECT
+		initcap(cr.location_description) AS location_description,
+		count(*) AS location_description_count,
+		sum(
+			CASE
+				WHEN w.temp_high >= 60 AND w.temp_high < 90 THEN 1
+				ELSE 0
+			END) AS warm_weather,
+		sum(
+			CASE
+				WHEN w.temp_high >= 90 THEN 1
+				ELSE 0
+			END) AS hot_weather,
+		sum(
+			CASE
+				WHEN w.temp_high < 60 AND w.temp_high >= 32 THEN 1
+				ELSE 0
+			END) AS cold_weather,
+		sum(
+			CASE
+				WHEN w.temp_high < 32 THEN 1
+				ELSE 0
+			END) AS freezing_weather
+	FROM
+		chicago.crimes AS cr
+	JOIN
+		chicago.weather AS w
+	ON
+		cr.reported_crime_date = w.weather_date
+	WHERE
+		cr.location_description IS NOT NULL
+	GROUP BY
+		cr.location_description
+	ORDER BY 
+		location_description_count DESC
+	LIMIT 10
+)
+SELECT
+	location_description,
+	location_description_count,
+	warm_weather || ' (' || round(100 * (warm_weather / location_description_count::float)::NUMERIC, 2) || ')' AS warm_weather_perc,
+	hot_weather || ' (' || round(100 * (hot_weather / location_description_count::float)::NUMERIC, 2) || ')' AS hot_weather_perc,
+	cold_weather || ' (' || round(100 * (cold_weather / location_description_count::float)::NUMERIC, 2) || ')' AS cold_weather_perc,
+	freezing_weather || ' (' || round(100 * (freezing_weather / location_description_count::float)::NUMERIC, 2) || ')' AS freezing_weather_perc
+FROM
+	get_totals;
 
+-- Results:
 
+/*
 
+location_description                  |location_description_count|warm_weather_perc|hot_weather_perc|cold_weather_perc|freezing_weather_perc|
+--------------------------------------+--------------------------+-----------------+----------------+-----------------+---------------------+
+Street                                |                    285785|140046 (49.00)   |19056 (6.67)    |106638 (37.31)   |20045 (7.01)         |
+Apartment                             |                    196352|89500 (45.58)    |12261 (6.24)    |78170 (39.81)    |16421 (8.36)         |
+Residence                             |                    190224|86110 (45.27)    |12178 (6.40)    |76640 (40.29)    |15296 (8.04)         |
+Sidewalk                              |                     79100|41721 (52.74)    |6042 (7.64)     |26933 (34.05)    |4404 (5.57)          |
+Small Retail Store                    |                     32251|14926 (46.28)    |2017 (6.25)     |12665 (39.27)    |2643 (8.20)          |
+Restaurant                            |                     26437|11791 (44.60)    |1620 (6.13)     |10695 (40.45)    |2331 (8.82)          |
+Alley                                 |                     24754|12850 (51.91)    |1747 (7.06)     |8733 (35.28)     |1424 (5.75)          |
+Other                                 |                     22728|9647 (42.45)     |1251 (5.50)     |9587 (42.18)     |2243 (9.87)          |
+Parking Lot / Garage (Non Residential)|                     20601|10901 (52.91)    |1389 (6.74)     |7085 (34.39)     |1226 (5.95)          |
+Vehicle Non-Commercial                |                     19114|8978 (46.97)     |1283 (6.71)     |7371 (38.56)     |1482 (7.75)          |	
 
+*/
 
 
 
