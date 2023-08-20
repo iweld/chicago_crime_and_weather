@@ -515,6 +515,41 @@ reported_crime_year|num_of_crimes|prev_year_count|year_over_year|
 
 */
 
+-- 13. Calculate the year over year growth in the number of reported domestic violence crimes.
+
+WITH get_year_count AS (
+	SELECT
+		EXTRACT('year' FROM cr.reported_crime_date) AS domestic_crime_year,
+		count(*) AS num_of_crimes
+	FROM
+		chicago.crimes AS cr
+	WHERE
+		cr.domestic = TRUE
+	GROUP BY
+		domestic_crime_year
+)
+SELECT 
+	domestic_crime_year,
+	num_of_crimes,
+	LAG(num_of_crimes) OVER (ORDER BY domestic_crime_year) AS prev_year_count,
+	round (100 * (num_of_crimes - LAG(num_of_crimes) OVER (ORDER BY domestic_crime_year)) / LAG(num_of_crimes) OVER (ORDER BY domestic_crime_year)::NUMERIC, 2) AS domestic_yoy
+FROM
+	get_year_count;
+
+-- Results:
+
+/*
+
+domestic_crime_year|num_of_crimes|prev_year_count|domestic_yoy|
+-------------------+-------------+---------------+------------+
+               2018|        44099|               |            |
+               2019|        43344|          44099|       -1.71|
+               2020|        39983|          43344|       -7.75|
+               2021|        45018|          39983|       12.59|
+               2022|        42530|          45018|       -5.53|	
+
+*/
+
 
 
 
