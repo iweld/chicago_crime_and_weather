@@ -469,6 +469,37 @@ Other                                 |                     22728|9647 (42.45)  
 Parking Lot / Garage (Non Residential)|                     20601|10901 (52.91)    |1389 (6.74)     |7085 (34.39)     |1226 (5.95)          |
 Vehicle Non-Commercial                |                     19114|8978 (46.97)     |1283 (6.71)     |7371 (38.56)     |1482 (7.75)          |
 
+**12.** Calculate the year over year growth in the number of reported crimes.
+
+````sql
+WITH get_year_count AS (
+	SELECT
+		EXTRACT('year' FROM cr.reported_crime_date) AS reported_crime_year,
+		count(*) AS num_of_crimes
+	FROM
+		chicago.crimes AS cr
+	GROUP BY
+		reported_crime_year
+)
+SELECT 
+	reported_crime_year,
+	num_of_crimes,
+	LAG(num_of_crimes) OVER (ORDER BY reported_crime_year) AS prev_year_count,
+	round (100 * (num_of_crimes - LAG(num_of_crimes) OVER (ORDER BY reported_crime_year)) / LAG(num_of_crimes) OVER (ORDER BY reported_crime_year)::NUMERIC, 2) AS year_over_year
+FROM
+	get_year_count;
+````
+
+**Results:**
+
+reported_crime_year|num_of_crimes|prev_year_count|year_over_year|
+-------------------|-------------|---------------|--------------|
+2018|       268816|               |              |
+2019|       261293|         268816|         -2.80|
+2020|       212176|         261293|        -18.80|
+2021|       208759|         212176|         -1.61|
+2022|       238736|         208759|         14.36|
+
 To be continued....
 
 :exclamation: If you find this repository helpful, please consider giving it a :star:. Thanks! :exclamation:
