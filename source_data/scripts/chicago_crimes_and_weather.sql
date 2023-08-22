@@ -1,4 +1,13 @@
-
+/*
+	Chicago Crime and Weather
+	Author: Jaime M. Shaker
+	Email: jaime.m.shaker@gmail.com or jaime@shaker.dev
+	Website: https://www.shaker.dev
+	LinkedIn: https://www.linkedin.com/in/jaime-shaker/
+	
+	File Name: chicago_crimes_and_weather.sql
+	
+*/
 
 -- 1. List the total number of reported crimes between 2018 and 2022?
 
