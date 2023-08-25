@@ -52,20 +52,20 @@ Homicide  |    3440|
 
 ````sql
 SELECT 
-	initcap(co.community_name) AS community,
-	co.population,
-	co.density,
+	initcap(t2.community_name) AS community,
+	t2.population,
+	t2.density,
 	count(*) AS reported_crimes
 FROM 
-	chicago.crimes AS cr
+	chicago.crimes AS t1
 JOIN
-	chicago.community AS co
+	chicago.community AS t2
 ON 
-	co.community_id = cr.community_id
+	t2.community_id = t1.community_id
 GROUP BY 
-	co.community_name,
-	co.population,
-	co.density
+	t2.community_name,
+	t2.population,
+	t2.density
 ORDER BY 
 	reported_crimes DESC
 LIMIT 10;
@@ -90,22 +90,22 @@ Roseland       |     38816| 8053.11|          30836|
 
 ````sql
 SELECT 
-	initcap(co.community_name) AS community,
-	co.population,
-	co.density,
+	initcap(t2.community_name) AS community,
+	t2.population,
+	t2.density,
 	count(*) AS reported_crimes
 FROM 
-	chicago.crimes AS cr
+	chicago.crimes AS t1
 JOIN
-	chicago.community AS co
+	chicago.community AS t2
 ON 
-	co.community_id = cr.community_id
+	t2.community_id = t1.community_id
 GROUP BY 
-	co.community_name,
-	co.population,
-	co.density
+	t2.community_name,
+	t2.population,
+	t2.density
 ORDER BY 
-	reported_crimes 
+	reported_crimes
 LIMIT 10;
 ````
 
@@ -127,17 +127,17 @@ Mckinley Park  |     15923|11292.91|           4081|
 **5.** What month had the most crimes reported and what was the average and median temperature high in the last five years?
 
 ````sql
-SELECT
-	to_char(cr.reported_crime_date, 'Month') AS month,
+ELECT
+	to_char(t1.reported_crime_date, 'Month') AS month,
 	COUNT(*) AS n_crimes,
-	round(avg(w.temp_high), 1) avg_high_temp,
-	PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY w.temp_high) AS median_high_temp
+	round(avg(t2.temp_high), 1) avg_high_temp,
+	PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY t2.temp_high) AS median_high_temp
 FROM
-	chicago.crimes AS cr
+	chicago.crimes AS t1
 JOIN 
-	chicago.weather AS w
+	chicago.weather AS t2
 ON 
-	cr.reported_crime_date = w.weather_date
+	t1.reported_crime_date = t2.weather_date
 GROUP BY
 	month
 ORDER BY
@@ -165,18 +165,18 @@ February |   82329|         35.3|            35.0|
 
 ````sql
 SELECT
-	to_char(cr.reported_crime_date, 'Month') AS month,
+	to_char(t1.reported_crime_date, 'Month') AS month,
 	COUNT(*) AS n_crimes,
-	round(avg(w.temp_high), 1) avg_high_temp,
-	PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY w.temp_high) AS median_high_temp
+	round(avg(t2.temp_high), 1) avg_high_temp,
+	PERCENTILE_CONT(0.5) WITHIN GROUP(ORDER BY t2.temp_high) AS median_high_temp
 FROM
-	chicago.crimes AS cr
+	chicago.crimes AS t1
 JOIN 
-	chicago.weather AS w
+	chicago.weather AS t2
 ON 
-	cr.reported_crime_date = w.weather_date
+	t1.reported_crime_date = t2.weather_date
 WHERE
-	cr.crime_type = 'homicide'
+	t1.crime_type = 'homicide'
 GROUP BY
 	month
 ORDER BY
@@ -205,8 +205,8 @@ March    |     185|         49.3|            48.0|
 ````sql
 WITH get_arrest_percentage AS (
 	SELECT
-		EXTRACT('year' FROM cr.reported_crime_date) AS most_violent_year,
-		count(*) AS n_crimes,
+		EXTRACT('year' FROM t1.reported_crime_date) AS most_violent_year,
+		count(*) AS reported_violent_crimes,
 		sum(
 			CASE
 				WHEN arrest = TRUE THEN 1
@@ -214,18 +214,18 @@ WITH get_arrest_percentage AS (
 			END 
 		) AS number_of_arrests
 	FROM
-		chicago.crimes AS cr
+		chicago.crimes AS t1
 	WHERE 
 		crime_type IN ('homicide', 'battery', 'assault')
 	GROUP BY
 		most_violent_year
 	ORDER BY
-		n_crimes DESC
+		reported_violent_crimes DESC
 )
 SELECT
 	most_violent_year,
-	n_crimes,
-	number_of_arrests || ' (' || 100 * number_of_arrests  / n_crimes || '%)' AS number_of_arrests
+	reported_violent_crimes,
+	number_of_arrests || ' (' || round(100 * number_of_arrests::NUMERIC / reported_violent_crimes, 2) || '%)' AS number_of_arrests
 FROM
 	get_arrest_percentage;
 ````
@@ -234,30 +234,30 @@ FROM
 
 most_violent_year|reported_violent_crimes|number_of_arrests|
 -----------------|-----------------------|-----------------|
-2018|                  70835|13907 (19%)      |
-2019|                  70645|14334 (20%)      |
-2022|                  62412|8165 (13%)       |
-2021|                  61611|7855 (12%)       |
-2020|                  60562|9577 (15%)       |
+2018|                  70835|13907 (19.63%)   |
+2019|                  70645|14334 (20.29%)   |
+2022|                  62412|8165 (13.08%)    |
+2021|                  61611|7855 (12.75%)    |
+2020|                  60562|9577 (15.81%)    |
 
 **8.** List the day of the week, year, average precipitation and highest number of reported crimes for days with precipitation.
 
 ````sql
 WITH get_weekday_values AS (
 	SELECT
-		EXTRACT('year' FROM cr.reported_crime_date) AS crime_year,
-		to_char(cr.reported_crime_date, 'Day') AS day_of_week,
-		round(avg(w.precipitation)::numeric, 2) AS avg_precipitation,
+		EXTRACT('year' FROM t1.reported_crime_date) AS crime_year,
+		to_char(t1.reported_crime_date, 'Day') AS day_of_week,
+		round(avg(t2.precipitation)::NUMERIC, 2) AS avg_precipitation,
 		COUNT(*) AS n_crimes,
-		DENSE_RANK() OVER(PARTITION BY EXTRACT('year' FROM cr.reported_crime_date) ORDER BY count(*) DESC) AS rnk
+		DENSE_RANK() OVER(PARTITION BY EXTRACT('year' FROM t1.reported_crime_date) ORDER BY count(*) DESC) AS rnk
 	FROM
-		chicago.crimes AS cr
+		chicago.crimes AS t1
 	JOIN 
-		chicago.weather AS w
+		chicago.weather AS t2
 	ON
-		cr.reported_crime_date = w.weather_date
+		t1.reported_crime_date = t2.weather_date
 	WHERE
-		w.precipitation > 0
+		t2.precipitation > 0
 	GROUP BY
 		crime_year,
 		day_of_week
@@ -290,51 +290,51 @@ crime_year|day_of_week|avg_precipitation|n_crimes|
 **9.** List the days with the most reported crimes when there is zero precipitation and the day when precipitation is greater than .5".  Include the day of the week, high temperature, amount and precipitation and the total number of reported crimes for that day.
 
 ````sql
-WITH no_precipitation AS (
+WITH precipitation_false AS (
 	SELECT
-		cr.reported_crime_date,
-		to_char(cr.reported_crime_date, 'Day') AS day_of_week,
-		w.temp_high,
-		w.precipitation,
+		t1.reported_crime_date,
+		to_char(t1.reported_crime_date, 'Day') AS day_of_week,
+		t2.temp_high,
+		t2.precipitation,
 		count(*) AS reported_crimes
 	FROM
-		chicago.crimes AS cr
+		chicago.crimes AS t1
 	JOIN
-		chicago.weather AS w
+		chicago.weather AS t2
 	ON
-		cr.reported_crime_date = w.weather_date
+		t1.reported_crime_date = t2.weather_date
 	WHERE
-		w.precipitation = 0
+		t2.precipitation = 0
 	GROUP BY 
 		day_of_week,
-		w.precipitation,
+		t2.precipitation,
 		temp_high,
-		cr.reported_crime_date
+		t1.reported_crime_date
 	ORDER BY
 		reported_crimes DESC
 	LIMIT 
 		1
 ),
-yes_precipitation AS (
+precipitation_true AS (
 	SELECT
-		cr.reported_crime_date,
-		to_char(cr.reported_crime_date, 'Day') AS day_of_week,
-		w.temp_high,
-		w.precipitation,
+		t1.reported_crime_date,
+		to_char(t1.reported_crime_date, 'Day') AS day_of_week,
+		t2.temp_high,
+		t2.precipitation,
 		count(*) AS reported_crimes
 	FROM
-		chicago.crimes AS cr
+		chicago.crimes AS t1
 	JOIN
-		chicago.weather AS w
+		chicago.weather AS t2
 	ON
-		cr.reported_crime_date = w.weather_date
+		t1.reported_crime_date = t2.weather_date
 	WHERE
-		w.precipitation > .5
+		t2.precipitation > .5
 	GROUP BY 
 		day_of_week,
 		temp_high,
-		w.precipitation,
-		cr.reported_crime_date
+		t2.precipitation,
+		t1.reported_crime_date
 	ORDER BY
 		reported_crimes DESC
 	LIMIT 
@@ -342,11 +342,13 @@ yes_precipitation AS (
 )
 SELECT
 	*
-FROM no_precipitation
+FROM 
+	precipitation_false
 UNION
 SELECT
 	*
-FROM yes_precipitation
+FROM 
+	precipitation_true
 ORDER BY
 	reported_crimes DESC;
 ````
@@ -360,17 +362,18 @@ reported_crime_date|day_of_week|temp_high|precipitation|reported_crimes|
 
 **10.** List the most consecutive days where a homicide occured between 2018-2022 and the timeframe.
 
-````sql
-WITH get_homicide_dates AS (
-	-- Get only one date per homicide
+```sql
+DROP TABLE IF EXISTS homicide_dates;
+CREATE TEMP TABLE get_homicide_dates AS (
 	SELECT 
 		DISTINCT ON (reported_crime_date) reported_crime_date AS homicide_dates
 	FROM
 		chicago.crimes
 	WHERE
 		crime_type = 'homicide'
-),
-get_rn_diff AS (
+);
+
+WITH get_rn_diff AS (
 	SELECT 
 		homicide_dates,
 		homicide_dates - row_number() OVER ()::int AS diff
@@ -394,7 +397,7 @@ FROM
 	get_diff_count
 WHERE 
 	diff_count = (SELECT max(diff_count) FROM get_diff_count);
-````
+```
 
 **Results:**
 
@@ -404,41 +407,41 @@ most_consecutive_days|consecutive_days_timeframe|
 
 **11.** What are the top 10 most common locations for reported crimes and the number of reported crime (add percentage) depending on the temperature?
 
-````sql
+```sql
 WITH get_totals AS (
 	SELECT
-		initcap(cr.location_description) AS location_description,
+		initcap(t1.location_description) AS location_description,
 		count(*) AS location_description_count,
 		sum(
 			CASE
-				WHEN w.temp_high >= 60 AND w.temp_high < 90 THEN 1
+				WHEN t2.temp_high >= 60 AND t2.temp_high < 90 THEN 1
 				ELSE 0
 			END) AS warm_weather,
 		sum(
 			CASE
-				WHEN w.temp_high >= 90 THEN 1
+				WHEN t2.temp_high >= 90 THEN 1
 				ELSE 0
 			END) AS hot_weather,
 		sum(
 			CASE
-				WHEN w.temp_high < 60 AND w.temp_high >= 32 THEN 1
+				WHEN t2.temp_high < 60 AND t2.temp_high >= 32 THEN 1
 				ELSE 0
 			END) AS cold_weather,
 		sum(
 			CASE
-				WHEN w.temp_high < 32 THEN 1
+				WHEN t2.temp_high < 32 THEN 1
 				ELSE 0
 			END) AS freezing_weather
 	FROM
-		chicago.crimes AS cr
+		chicago.crimes AS t1
 	JOIN
-		chicago.weather AS w
+		chicago.weather AS t2
 	ON
-		cr.reported_crime_date = w.weather_date
+		t1.reported_crime_date = t2.weather_date
 	WHERE
-		cr.location_description IS NOT NULL
+		t1.location_description IS NOT NULL
 	GROUP BY
-		cr.location_description
+		t1.location_description
 	ORDER BY 
 		location_description_count DESC
 	LIMIT 10
@@ -452,7 +455,7 @@ SELECT
 	freezing_weather || ' (' || round(100 * (freezing_weather / location_description_count::float)::NUMERIC, 2) || ')' AS freezing_weather_perc
 FROM
 	get_totals;
-````
+```
 
 **Results:**
 
@@ -471,13 +474,13 @@ Vehicle Non-Commercial                |                     19114|8978 (46.97)  
 
 **12.** Calculate the year over year growth in the number of reported crimes.
 
-````sql
+```sql
 WITH get_year_count AS (
 	SELECT
-		EXTRACT('year' FROM cr.reported_crime_date) AS reported_crime_year,
+		EXTRACT('year' FROM t1.reported_crime_date) AS reported_crime_year,
 		count(*) AS num_of_crimes
 	FROM
-		chicago.crimes AS cr
+		chicago.crimes AS t1
 	GROUP BY
 		reported_crime_year
 )
@@ -488,7 +491,7 @@ SELECT
 	round (100 * (num_of_crimes - LAG(num_of_crimes) OVER (ORDER BY reported_crime_year)) / LAG(num_of_crimes) OVER (ORDER BY reported_crime_year)::NUMERIC, 2) AS year_over_year
 FROM
 	get_year_count;
-````
+```
 
 **Results:**
 
@@ -505,12 +508,12 @@ reported_crime_year|num_of_crimes|prev_year_count|year_over_year|
 ````sql
 WITH get_year_count AS (
 	SELECT
-		EXTRACT('year' FROM cr.reported_crime_date) AS domestic_crime_year,
+		EXTRACT('year' FROM t1.reported_crime_date) AS domestic_crime_year,
 		count(*) AS num_of_crimes
 	FROM
-		chicago.crimes AS cr
+		chicago.crimes AS t1
 	WHERE
-		cr.domestic = TRUE
+		t1.domestic = TRUE
 	GROUP BY
 		domestic_crime_year
 )
@@ -538,15 +541,15 @@ domestic_crime_year|num_of_crimes|prev_year_count|domestic_yoy|
 ````sql
 WITH get_totals AS (
 	SELECT
-		to_char(cr.reported_crime_date, 'Month') AS total_month,
+		to_char(t1.reported_crime_date, 'Month') AS total_month,
 		COUNT(*) AS n_crimes,
-		round(avg(w.temp_high), 1) AS avg_high_temp
+		round(avg(t2.temp_high), 1) AS avg_high_temp
 	FROM
-		chicago.crimes AS cr
+		chicago.crimes AS t1
 	JOIN 
-		chicago.weather AS w
+		chicago.weather AS t2
 	ON 
-		cr.reported_crime_date = w.weather_date
+		t1.reported_crime_date = t2.weather_date
 	GROUP BY
 		total_month
 )
