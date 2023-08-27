@@ -175,8 +175,8 @@ CREATE SCHEMA IF NOT EXISTS chicago;
 DROP TABLE IF EXISTS chicago.crimes;
 CREATE TABLE chicago.crimes (
 	crime_id int,
-	reported_crime_timestamp timestamp NOT NULL,
 	reported_crime_date date NOT NULL,
+	reported_crime_time time NOT NULL,
 	street_name TEXT NOT NULL,	
 	crime_type TEXT NOT NULL,	
 	crime_description TEXT NOT NULL,	
@@ -192,8 +192,8 @@ CREATE TABLE chicago.crimes (
 
 INSERT INTO chicago.crimes (
 	crime_id,
-	reported_crime_timestamp,
 	reported_crime_date,
+	reported_crime_time,
 	street_name,
 	crime_type,
 	crime_description,
@@ -207,8 +207,8 @@ INSERT INTO chicago.crimes (
 ) (
 	SELECT
 		c.crime_id,
-		c.date_reported::timestamp,
 		date(c.date_reported::timestamp),
+		c.date_reported::time,
 		split_part(trim(lower(c.city_block)), ' ', 3) || ' ' || split_part(trim(lower(c.city_block)), ' ', 4),	
 		trim(lower(c.primary_type)),	
 		trim(lower(c.primary_description)),	
@@ -320,4 +320,3 @@ DROP TABLE import_data.crimes;
 DROP TABLE import_data.weather;
 DROP TABLE import_data.community;
 DROP SCHEMA import_data CASCADE;
-
