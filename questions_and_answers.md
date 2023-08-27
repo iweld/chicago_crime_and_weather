@@ -48,6 +48,37 @@ Battery   |  222214|
 Assault   |  100411|
 Homicide  |    3440|
 
+**3.** Which are the 3 most common crimes reported and what percentage amount are they from the total amount of reported crimes?
+
+```sql
+WITH get_top_crime AS (
+	SELECT 
+		initcap(crime_type) AS crime_type,
+		count(*) AS n_crimes
+	FROM 
+		chicago.crimes
+	GROUP BY 
+		crime_type
+	ORDER BY 
+		n_crimes DESC
+)
+SELECT
+	crime_type,
+	n_crimes,
+	round(100 * n_crimes::NUMERIC / sum(n_crimes) OVER (), 2) AS total_percentage
+FROM
+	get_top_crime
+LIMIT 3;
+```
+
+**Results:**
+
+crime_type     |n_crimes|total_percentage|
+---------------|--------|----------------|
+Theft          |  264701|           22.25|
+Battery        |  222214|           18.68|
+Criminal Damage|  131716|           11.07|
+
 **3.** What are the top ten communities that had the MOST amount of crimes reported?  Include the current population, density and order by the number of reported crimes.
 
 ````sql
