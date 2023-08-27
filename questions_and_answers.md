@@ -79,7 +79,7 @@ Theft          |  264701|           22.25|
 Battery        |  222214|           18.68|
 Criminal Damage|  131716|           11.07|
 
-**3.** What are the top ten communities that had the MOST amount of crimes reported?  Include the current population, density and order by the number of reported crimes.
+**4.** What are the top ten communities that had the MOST amount of crimes reported?  Include the current population, density and order by the number of reported crimes.
 
 ````sql
 SELECT 
@@ -117,7 +117,7 @@ Auburn Gresham |     44878|11903.98|          33680|
 West Town      |     87781|19166.16|          32812|
 Roseland       |     38816| 8053.11|          30836|
 
-**4.** What are the top ten communities that had the LEAST amount of crimes reported?  Include the current population, density and order by the number of reported crimes.
+**5.** What are the top ten communities that had the LEAST amount of crimes reported?  Include the current population, density and order by the number of reported crimes.
 
 ````sql
 SELECT 
@@ -155,7 +155,7 @@ Fuller Park    |      2567| 3615.49|           3616|
 Archer Heights |     14196| 7062.69|           4011|
 Mckinley Park  |     15923|11292.91|           4081|
 
-**5.** What month had the most crimes reported and what was the average and median temperature high in the last five years?
+**6.** What month had the most crimes reported and what was the average and median temperature high in the last five years?
 
 ````sql
 ELECT
@@ -192,7 +192,7 @@ January  |   92018|         32.3|            34.0|
 April    |   88707|         56.7|            55.0|
 February |   82329|         35.3|            35.0|
 
-**6.** What month had the most homicides reported and what was the average and median temperature high in the last five years?
+**7.** What month had the most homicides reported and what was the average and median temperature high in the last five years?
 
 ````sql
 SELECT
@@ -231,7 +231,7 @@ January  |     212|         32.9|            33.0|
 February |     190|         35.0|            37.0|
 March    |     185|         49.3|            48.0|
 
-**7.** List the most violent year and the number of arrests with percentage.  Order by the number of crimes in decending order.  Determine the most violent year by the number of reported Homicides, Assaults and Battery for that year.
+**8.** List the most violent year and the number of arrests with percentage.  Order by the number of crimes in decending order.  Determine the most violent year by the number of reported Homicides, Assaults and Battery for that year.
 
 ````sql
 WITH get_arrest_percentage AS (
@@ -271,7 +271,7 @@ most_violent_year|reported_violent_crimes|number_of_arrests|
 2021|                  61611|7855 (12.75%)    |
 2020|                  60562|9577 (15.81%)    |
 
-**8.** List the day of the week, year, average precipitation and highest number of reported crimes for days with precipitation.
+**9.** List the day of the week, year, average precipitation and highest number of reported crimes for days with precipitation.
 
 ````sql
 WITH get_weekday_values AS (
@@ -318,7 +318,7 @@ crime_year|day_of_week|avg_precipitation|n_crimes|
 2021|Sunday     |             0.30|   10889|
 2022|Friday     |             0.21|   13029|
 
-**9.** List the days with the most reported crimes when there is zero precipitation and the day when precipitation is greater than .5".  Include the day of the week, high temperature, amount and precipitation and the total number of reported crimes for that day.
+**10.** List the days with the most reported crimes when there is zero precipitation and the day when precipitation is greater than .5".  Include the day of the week, high temperature, amount and precipitation and the total number of reported crimes for that day.
 
 ````sql
 WITH precipitation_false AS (
@@ -391,7 +391,7 @@ reported_crime_date|day_of_week|temp_high|precipitation|reported_crimes|
 2020-05-31|Sunday     |       69|          0.0|           1899|
 2018-10-01|Monday     |       72|         1.56|            926|
 
-**10.** List the most consecutive days where a homicide occured between 2018-2022 and the timeframe.
+**11.** List the most consecutive days where a homicide occured between 2018-2022 and the timeframe.
 
 ```sql
 DROP TABLE IF EXISTS homicide_dates;
@@ -436,7 +436,7 @@ most_consecutive_days|consecutive_days_timeframe|
 ---------------------|--------------------------|
 47|2020-06-13 to 2020-07-29  |
 
-**11.** What are the top 10 most common locations for reported crimes and the number of reported crime (add percentage) depending on the temperature?
+**12.** What are the top 10 most common locations for reported crimes and the number of reported crime (add percentage) depending on the temperature?
 
 ```sql
 WITH get_totals AS (
@@ -503,7 +503,7 @@ Other                                 |                     22728|9647 (42.45)  
 Parking Lot / Garage (Non Residential)|                     20601|10901 (52.91)    |1389 (6.74)     |7085 (34.39)     |1226 (5.95)          |
 Vehicle Non-Commercial                |                     19114|8978 (46.97)     |1283 (6.71)     |7371 (38.56)     |1482 (7.75)          |
 
-**12.** Calculate the year over year growth in the number of reported crimes.
+**13.** Calculate the year over year growth in the number of reported crimes.
 
 ```sql
 WITH get_year_count AS (
@@ -534,7 +534,7 @@ reported_crime_year|num_of_crimes|prev_year_count|year_over_year|
 2021|       208759|         212176|         -1.61|
 2022|       238736|         208759|         14.36|
 
-**13.** Calculate the year over year growth in the number of reported domestic violence crimes.
+**14.** Calculate the year over year growth in the number of reported domestic violence crimes.
 
 ````sql
 WITH get_year_count AS (
@@ -567,7 +567,7 @@ domestic_crime_year|num_of_crimes|prev_year_count|domestic_yoy|
 2021|        45018|          39983|       12.59|
 2022|        42530|          45018|       -5.53|
 
-**14.** Calculate the year over year growth in the number of reported domestic violence crimes.
+**15.** Calculate the year over year growth in the number of reported domestic violence crimes.
 
 ````sql
 WITH get_totals AS (

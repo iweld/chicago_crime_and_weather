@@ -44,7 +44,7 @@ Battery   |  222214|
 Assault   |  100411|
 Homicide  |    3440|
  
--- 3. Which are the 3 most common crime reported and what percentage amount are they from the total amount of reported crimes?
+-- 3. Which are the 3 most common crimes reported and what percentage amount are they from the total amount of reported crimes?
 
 WITH get_top_crime AS (
 	SELECT 
@@ -74,7 +74,7 @@ Battery        |  222214|           18.68|
 Criminal Damage|  131716|           11.07|
 
 
--- 3. What are the top ten communities that had the MOST amount of crimes reported?
+-- 4. What are the top ten communities that had the MOST amount of crimes reported?
 -- Include the current population, density and order by the number of reported crimes.
 
 SELECT 
@@ -115,7 +115,7 @@ Roseland       |     38816| 8053.11|          30836|
 
 */
 
--- 4. What are the top ten communities that had the LEAST amount of crimes reported?
+-- 5. What are the top ten communities that had the LEAST amount of crimes reported?
 -- Include the current population, density and order by the number of reported crimes.
 
 SELECT 
@@ -156,7 +156,7 @@ Mckinley Park  |     15923|11292.91|           4081|
 
 */
 
--- 5. What month had the most crimes reported and what was the average and median
+-- 6. What month had the most crimes reported and what was the average and median
 -- temperature high in the last five years?
 
 SELECT
@@ -196,7 +196,7 @@ February |   82329|         35.3|            35.0|
 
 */
 
--- 6. What month had the most homicides reported and what was the average and median
+-- 7. What month had the most homicides reported and what was the average and median
 -- temperature high in the last five years?
 
 SELECT
@@ -238,7 +238,7 @@ March    |     185|         49.3|            48.0|
 
 */
 
--- 7. List the most violent year and the number of arrests with percentage.  Order by the number of crimes in decending order.  
+-- 8. List the most violent year and the number of arrests with percentage.  Order by the number of crimes in decending order.  
 -- Determine the most violent year by the number of reported Homicides, Assaults and Battery for that year.
 
 WITH get_arrest_percentage AS (
@@ -281,7 +281,7 @@ most_violent_year|reported_violent_crimes|number_of_arrests|
 
 */
 
--- 8. List the day of the week, year, average precipitation and highest number of reported crimes for days with precipitation.
+-- 9. List the day of the week, year, average precipitation and highest number of reported crimes for days with precipitation.
 
 WITH get_weekday_values AS (
 	SELECT
@@ -330,7 +330,7 @@ crime_year|day_of_week|avg_precipitation|n_crimes|
 
 */
 
--- 9. List the days with the most reported crimes when there is zero precipitation and
+-- 10. List the days with the most reported crimes when there is zero precipitation and
 -- the day when precipitation is greater than .5".  Include the day of the week, high temperature,
 -- amount and precipitation and the total number of reported crimes for that day. 
 
@@ -408,7 +408,7 @@ reported_crime_date|day_of_week|temp_high|precipitation|reported_crimes|
 */
 
 
--- 10. List the most consecutive days where a homicide occured and the timeframe.
+-- 11. List the most consecutive days where a homicide occured and the timeframe.
 
 DROP TABLE IF EXISTS homicide_dates;
 CREATE TEMP TABLE get_homicide_dates AS (
@@ -455,7 +455,7 @@ most_consecutive_days|consecutive_days_timeframe|
 
 */
 
--- 11. What are the top 10 most common locations for reported crimes and the number of reported crime (add percentage) 
+-- 12. What are the top 10 most common locations for reported crimes and the number of reported crime (add percentage) 
 -- depending on the temperature?                  
 
 WITH get_totals AS (
@@ -525,7 +525,7 @@ Vehicle Non-Commercial                |                     19114|8978 (46.97)  
 
 */
 
--- 12. Calculate the year over year growth in the number of reported crimes.
+-- 13. Calculate the year over year growth in the number of reported crimes.
 
 WITH get_year_count AS (
 	SELECT
@@ -558,7 +558,7 @@ reported_crime_year|num_of_crimes|prev_year_count|year_over_year|
 
 */
 
--- 13. Calculate the year over year growth in the number of reported domestic violence crimes.
+-- 14. Calculate the year over year growth in the number of reported domestic violence crimes.
 
 WITH get_year_count AS (
 	SELECT
@@ -593,7 +593,7 @@ domestic_crime_year|num_of_crimes|prev_year_count|domestic_yoy|
 
 */
 
--- 14. Calculate the cumulative Month over Month growth in the number of reported crimes and avergage temperature high.
+-- 15. Calculate the cumulative Month over Month growth in the number of reported crimes and avergage temperature high.
 
 WITH get_totals AS (
 	SELECT
