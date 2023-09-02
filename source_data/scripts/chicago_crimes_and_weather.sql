@@ -678,7 +678,74 @@ December   |   96505|           95501|         40.6|         -7.0|              
 
 */
 
+-- 16.  What where the number of crimes reported for the astronomical seasons and what was the average temperature for each season of every year.
+
+WITH get_season_count AS (
+	SELECT
+		EXTRACT('year' FROM t1.reported_crime_date) AS crime_year,
+		CASE
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN count(*)
+		END AS winter,
+		CASE
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN avg(t2.temp_high)
+		END AS winter_avg_temp,
+		CASE
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN count(*)
+		END AS spring,
+		CASE
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN avg(t2.temp_high)
+		END AS spring_avg_temp,
+		CASE
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN count(*)
+		END AS summer,
+		CASE
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN avg(t2.temp_high)
+		END AS summer_avg_temp,
+		CASE
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN count(*)
+		END AS autumn,
+		CASE
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN avg(t2.temp_high)
+		END AS autumn_avg_temp,
+		avg(t2.temp_high) AS avg_weather	
+	FROM
+		chicago.crimes AS t1
+	JOIN
+		chicago.weather AS t2
+	ON
+		t1.reported_crime_date = t2.weather_date
+	GROUP BY
+		reported_crime_date,
+		crime_year
+)
+SELECT
+	crime_year,
+	ceil(avg(winter_avg_temp)::NUMERIC) AS winter_avg_temp,
+	sum(winter) AS winter_n_crimes,
+	ceil(avg(spring_avg_temp)::NUMERIC) AS spring_avg_temp,
+	sum(spring) AS spring_n_crimes,
+	ceil(avg(summer_avg_temp)::NUMERIC) AS summer_avg_temp,
+	sum(summer) AS summer_n_crimes,
+	ceil(avg(autumn_avg_temp)::NUMERIC) AS autumn_avg_temp,
+	sum(autumn) AS autumn_n_crimes
+FROM
+	get_season_count
+GROUP BY
+	crime_year;
 	
+-- Results:
+
+/*
+
+crime_year|winter_avg_temp|winter_n_crimes|spring_avg_temp|spring_n_crimes|summer_avg_temp|summer_n_crimes|autumn_avg_temp|autumn_n_crimes|
+----------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+---------------+
+      2018|             37|          59945|             58|          67174|             84|          75023|             60|          66674|
+      2019|             35|          59003|             57|          65168|             82|          72953|             60|          64169|
+      2020|             38|          54640|             60|          47282|             87|          57224|             64|          53030|
+      2021|             36|          46592|             62|          49514|             85|          56633|             65|          56020|
+      2022|             34|          50672|             59|          56501|             84|          65317|             64|          66246|	
+
+*/	
 
 
 
