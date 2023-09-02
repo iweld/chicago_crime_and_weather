@@ -271,14 +271,16 @@ most_violent_year|reported_violent_crimes|number_of_arrests|
 2021|                  61611|7855 (12.75%)    |
 2020|                  60562|9577 (15.81%)    |
 
-**9.** List the day of the week, year, average precipitation and highest number of reported crimes for days with precipitation.
+**9.** List the day of the week, year, average precipitation, average high temperature and the highest number of reported crimes for days with and without precipitation.
 
 ````sql
-WITH get_weekday_values AS (
+DROP TABLE IF EXISTS weekday_precipitation_values;
+CREATE TEMP TABLE weekday_precipitation_values AS (
 	SELECT
 		EXTRACT('year' FROM t1.reported_crime_date) AS crime_year,
 		to_char(t1.reported_crime_date, 'Day') AS day_of_week,
 		round(avg(t2.precipitation)::NUMERIC, 2) AS avg_precipitation,
+		round(avg(t2.temp_high)::NUMERIC, 2) AS avg_temp_high,
 		COUNT(*) AS n_crimes,
 		DENSE_RANK() OVER(PARTITION BY EXTRACT('year' FROM t1.reported_crime_date) ORDER BY count(*) DESC) AS rnk
 	FROM
@@ -294,29 +296,65 @@ WITH get_weekday_values AS (
 		day_of_week
 	ORDER BY
 		n_crimes DESC
-)
+);
+
+DROP TABLE IF EXISTS weekday_values;
+CREATE TEMP TABLE weekday_values AS (
+	SELECT
+		EXTRACT('year' FROM t1.reported_crime_date) AS crime_year,
+		to_char(t1.reported_crime_date, 'Day') AS day_of_week,
+		round(avg(t2.precipitation)::NUMERIC, 2) AS avg_precipitation,
+		round(avg(t2.temp_high)::NUMERIC, 2) AS avg_temp_high,
+		COUNT(*) AS n_crimes,
+		DENSE_RANK() OVER(PARTITION BY EXTRACT('year' FROM t1.reported_crime_date) ORDER BY count(*) DESC) AS rnk
+	FROM
+		chicago.crimes AS t1
+	JOIN 
+		chicago.weather AS t2
+	ON
+		t1.reported_crime_date = t2.weather_date
+	WHERE
+		t2.precipitation = 0
+	GROUP BY
+		crime_year,
+		day_of_week
+	ORDER BY
+		n_crimes DESC
+);
+
 SELECT
-	crime_year,
-	day_of_week,
-	avg_precipitation,
-	n_crimes
+	t1.crime_year,
+	t1.day_of_week,
+	t1.avg_precipitation,
+	t1.avg_temp_high,
+	t1.n_crimes,
+	t2.day_of_week,
+	t2.avg_temp_high,
+	t2.n_crimes,
+	t2.n_crimes - t1.n_crimes AS n_crime_difference
 FROM
-	get_weekday_values
+	weekday_precipitation_values AS t1
+JOIN
+	weekday_values AS t2
+ON
+	t1.crime_year = t2.crime_year
 WHERE
-	rnk = 1
+	t1.rnk = 1
+AND
+	t2.rnk = 1
 ORDER BY
-	crime_year;
+	t1.crime_year;
 ````
 
 **Results:**
 
-crime_year|day_of_week|avg_precipitation|n_crimes|
-----------|-----------|-----------------|--------|
-2018|Monday     |             0.57|   16455|
-2019|Wednesday  |             0.31|   19411|
-2020|Wednesday  |             0.29|   11394|
-2021|Sunday     |             0.30|   10889|
-2022|Friday     |             0.21|   13029|
+crime_year|day_of_week|avg_precipitation|avg_temp_high|n_crimes|day_of_week|avg_temp_high|n_crimes|n_crime_difference|
+----------|-----------|-----------------|-------------|--------|-----------|-------------|--------|------------------|
+2018|Monday     |             0.57|        60.23|   16455|Friday     |        60.24|   25667|              9212|
+2019|Wednesday  |             0.31|        64.00|   19411|Friday     |        57.09|   27042|              7631|
+2020|Wednesday  |             0.29|        63.54|   11394|Sunday     |        61.51|   23477|             12083|
+2021|Sunday     |             0.30|        57.12|   10889|Monday     |        65.31|   22840|             11951|
+2022|Friday     |             0.21|        51.44|   13029|Monday     |        59.95|   26026|             12997|
 
 **10.** List the days with the most reported crimes when there is zero precipitation and the day when precipitation is greater than .5".  Include the day of the week, high temperature, amount and precipitation and the total number of reported crimes for that day.
 
