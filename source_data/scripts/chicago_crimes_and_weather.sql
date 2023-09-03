@@ -678,7 +678,7 @@ December   |   96505|           95501|         40.6|         -7.0|              
 
 */
 
--- 16.  What where the number of crimes reported for the astronomical seasons and what was the average temperature for each season of every year.
+-- 16.  What where the number of crimes reported for the astronomical seasons and what was the average temperature for each season of every year?
 
 WITH get_season_count AS (
 	SELECT
@@ -747,6 +747,26 @@ crime_year|winter_avg_temp|winter_n_crimes|spring_avg_temp|spring_n_crimes|summe
 
 */	
 
+DROP TABLE IF EXISTS get_year_highs;
+CREATE TEMP TABLE get_year_highs AS (
+	SELECT
+		weather_date,
+		max(temp_high) AS max_high_temp,
+		DENSE_RANK() OVER (PARTITION BY EXTRACT('year' FROM weather_date) ORDER BY temp_high) AS rnk_low_temp,
+		DENSE_RANK() OVER (PARTITION BY EXTRACT('year' FROM weather_date) ORDER BY temp_high DESC) AS rnk_high_temp
+	FROM
+		chicago.weather
+	GROUP BY
+		weather_date,
+		temp_high
+);
 
+SELECT
+	weather_date,
+	max_high_temp
+FROM
+	get_year_highs
+WHERE
+	rnk_high = 1;
 
 
