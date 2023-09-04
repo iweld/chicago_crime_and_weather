@@ -574,7 +574,7 @@ reported_crime_year|num_of_crimes|prev_year_count|year_over_year|
 
 **14.** Calculate the year over year growth in the number of reported domestic violence crimes.
 
-````sql
+```sql
 WITH get_year_count AS (
 	SELECT
 		EXTRACT('year' FROM t1.reported_crime_date) AS domestic_crime_year,
@@ -593,7 +593,7 @@ SELECT
 	round (100 * (num_of_crimes - LAG(num_of_crimes) OVER (ORDER BY domestic_crime_year)) / LAG(num_of_crimes) OVER (ORDER BY domestic_crime_year)::NUMERIC, 2) AS domestic_yoy
 FROM
 	get_year_count;
-````
+```
 
 **Results:**
 
@@ -607,7 +607,7 @@ domestic_crime_year|num_of_crimes|prev_year_count|domestic_yoy|
 
 **15.** Calculate the year over year growth in the number of reported domestic violence crimes.
 
-````sql
+```sql
 WITH get_totals AS (
 	SELECT
 		to_char(t1.reported_crime_date, 'Month') AS total_month,
@@ -631,7 +631,7 @@ SELECT
 	round (100 * (n_crimes - LAG(n_crimes) OVER (ORDER BY TO_DATE(total_month, 'Month'))) / LAG(n_crimes) OVER (ORDER BY TO_DATE(total_month, 'Month'))::NUMERIC, 2) AS total_crime_growth
 FROM
 	get_totals;
-````
+```
 
 **Results:**
 
@@ -652,35 +652,28 @@ December   |   96505|           95501|         40.6|         -7.0|              
 
 **16.** What where the number of crimes reported for the astronomical seasons and what was the average temperature for each season of every year?
 
-````sql
+```sql
 WITH get_season_count AS (
 	SELECT
 		EXTRACT('year' FROM t1.reported_crime_date) AS crime_year,
 		CASE
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN '1 winter'
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN '2 spring'
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN '3 summer'
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN '4 fall'
+		END AS season,
+		CASE
 			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN count(*)
-		END AS winter,
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN count(*)
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN count(*)
+			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN count(*)
+		END AS n_crimes,
 		CASE
 			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN avg(t2.temp_high)
-		END AS winter_avg_temp,
-		CASE
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN count(*)
-		END AS spring,
-		CASE
 			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN avg(t2.temp_high)
-		END AS spring_avg_temp,
-		CASE
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN count(*)
-		END AS summer,
-		CASE
 			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN avg(t2.temp_high)
-		END AS summer_avg_temp,
-		CASE
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN count(*)
-		END AS autumn,
-		CASE
 			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN avg(t2.temp_high)
-		END AS autumn_avg_temp,
-		avg(t2.temp_high) AS avg_weather	
+		END AS avg_temp	
 	FROM
 		chicago.crimes AS t1
 	JOIN
@@ -693,29 +686,42 @@ WITH get_season_count AS (
 )
 SELECT
 	crime_year,
-	ceil(avg(winter_avg_temp)::NUMERIC) AS winter_avg_temp,
-	sum(winter) AS winter_n_crimes,
-	ceil(avg(spring_avg_temp)::NUMERIC) AS spring_avg_temp,
-	sum(spring) AS spring_n_crimes,
-	ceil(avg(summer_avg_temp)::NUMERIC) AS summer_avg_temp,
-	sum(summer) AS summer_n_crimes,
-	ceil(avg(autumn_avg_temp)::NUMERIC) AS autumn_avg_temp,
-	sum(autumn) AS autumn_n_crimes
+	initcap(substring(season, 3, length(season))) AS season,
+	round(avg(avg_temp)::NUMERIC) AS avg_temp,
+	sum(n_crimes) AS n_crimes
 FROM
 	get_season_count
 GROUP BY
-	crime_year;
-````
+	crime_year,
+	season
+ORDER BY
+	crime_year, season;
+```
 
 **Results:**
 
-crime_year|winter_avg_temp|winter_n_crimes|spring_avg_temp|spring_n_crimes|summer_avg_temp|summer_n_crimes|autumn_avg_temp|autumn_n_crimes|
-----------|---------------|---------------|---------------|---------------|---------------|---------------|---------------|---------------|
-2018|             37|          59945|             58|          67174|             84|          75023|             60|          66674|
-2019|             35|          59003|             57|          65168|             82|          72953|             60|          64169|
-2020|             38|          54640|             60|          47282|             87|          57224|             64|          53030|
-2021|             36|          46592|             62|          49514|             85|          56633|             65|          56020|
-2022|             34|          50672|             59|          56501|             84|          65317|             64|          66246|
+crime_year|season|avg_temp|n_crimes|
+----------|------|--------|--------|
+2018|Fall  |      59|   66674|
+2018|Spring|      57|   67174|
+2018|Summer|      83|   75023|
+2018|Winter|      36|   59945|
+2019|Fall  |      59|   64169|
+2019|Spring|      56|   65168|
+2019|Summer|      82|   72953|
+2019|Winter|      34|   59003|
+2020|Fall  |      64|   53030|
+2020|Spring|      59|   47282|
+2020|Summer|      86|   57224|
+2020|Winter|      37|   54640|
+2021|Fall  |      65|   56020|
+2021|Spring|      61|   49514|
+2021|Summer|      84|   56633|
+2021|Winter|      36|   46592|
+2022|Fall  |      64|   66246|
+2022|Spring|      59|   56501|
+2022|Summer|      83|   65317|
+2022|Winter|      33|   50672|
 
 To be continued....
 
