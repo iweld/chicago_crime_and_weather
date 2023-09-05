@@ -650,7 +650,7 @@ October    |  105563|          105075|         62.5|        -14.7|              
 November   |   95501|          105563|         47.6|        -14.9|             -9.53|
 December   |   96505|           95501|         40.6|         -7.0|              1.05|
 
-**16.** What where the number of crimes reported and seasonal growth for each astronomical seasons and what was the average temperature for each season oi 2020?  Use a conditional statement to display either a Gain/Loss for the season and the season over season growth
+**16.** List the number of crimes reported and seasonal growth for each astronomical season and what was the average temperature for each season in 2020?  Use a conditional statement to display either a Gain/Loss for the season and the season over season growth.
 
 ```sql
 DROP TABLE IF EXISTS yearly_seasonal_data;
