@@ -687,10 +687,10 @@ CREATE TEMP TABLE yearly_seasonal_data AS (
 		SELECT
 			EXTRACT('year' FROM t1.reported_crime_date) AS crime_year,
 			CASE
-				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN '1 winter'
-				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN '2 spring'
-				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN '3 summer'
-				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN '4 fall'
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN '1'
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN '2'
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN '3'
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN '4'
 			END AS season,
 			CASE
 				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN count(*)
@@ -716,7 +716,7 @@ CREATE TEMP TABLE yearly_seasonal_data AS (
 	)
 	SELECT
 		crime_year,
-		initcap(substring(season, 3, length(season))) AS season,
+		season,
 		round(avg(avg_temp)::NUMERIC) AS avg_temp,
 		sum(n_crimes) AS n_crimes
 	FROM
@@ -739,7 +739,13 @@ WITH get_buckets AS (
 )
 SELECT
 	crime_year,
-	season,
+	CASE
+		WHEN season = '1' THEN 'Winter'
+		WHEN season = '2' THEN 'Spring'
+		WHEN season = '3' THEN 'Summer'
+		WHEN season = '4' THEN 'Autumn'
+	END
+	,
 	avg_temp,
 	total_crime_growth,
 	CASE
@@ -756,28 +762,12 @@ WHERE
 
 /*
 
-crime_year|season|avg_temp|n_crimes|
-----------+------+--------+--------+
-      2018|Fall  |      59|   66674|
-      2018|Spring|      57|   67174|
-      2018|Summer|      83|   75023|
-      2018|Winter|      36|   59945|
-      2019|Fall  |      59|   64169|
-      2019|Spring|      56|   65168|
-      2019|Summer|      82|   72953|
-      2019|Winter|      34|   59003|
-      2020|Fall  |      64|   53030|
-      2020|Spring|      59|   47282|
-      2020|Summer|      86|   57224|
-      2020|Winter|      37|   54640|
-      2021|Fall  |      65|   56020|
-      2021|Spring|      61|   49514|
-      2021|Summer|      84|   56633|
-      2021|Winter|      36|   46592|
-      2022|Fall  |      64|   66246|
-      2022|Spring|      59|   56501|
-      2022|Summer|      83|   65317|
-      2022|Winter|      33|   50672|
+crime_year|case  |avg_temp|total_crime_growth|seasonal_growth|
+----------+------+--------+------------------+---------------+
+      2020|Winter|      37|             -0.15|Loss           |
+      2020|Spring|      59|             -0.13|Loss           |
+      2020|Summer|      86|              0.21|Gain           |
+      2020|Autumn|      64|             -0.07|Loss           |
 
 */	
 
