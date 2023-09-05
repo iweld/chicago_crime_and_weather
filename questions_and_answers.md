@@ -650,78 +650,88 @@ October    |  105563|          105075|         62.5|        -14.7|              
 November   |   95501|          105563|         47.6|        -14.9|             -9.53|
 December   |   96505|           95501|         40.6|         -7.0|              1.05|
 
-**16.** What where the number of crimes reported for the astronomical seasons and what was the average temperature for each season of every year?
+**16.** What where the number of crimes reported and seasonal growth for each astronomical seasons and what was the average temperature for each season oi 2020?  Use a conditional statement to display either a Gain/Loss for the season and the season over season growth
 
 ```sql
-WITH get_season_count AS (
+DROP TABLE IF EXISTS yearly_seasonal_data;
+CREATE TEMP TABLE yearly_seasonal_data AS (
+	WITH get_season_count AS (
+		SELECT
+			EXTRACT('year' FROM t1.reported_crime_date) AS crime_year,
+			CASE
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN '1 winter'
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN '2 spring'
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN '3 summer'
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN '4 fall'
+			END AS season,
+			CASE
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN count(*)
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN count(*)
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN count(*)
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN count(*)
+			END AS n_crimes,
+			CASE
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN avg(t2.temp_high)
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN avg(t2.temp_high)
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN avg(t2.temp_high)
+				WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN avg(t2.temp_high)
+			END AS avg_temp	
+		FROM
+			chicago.crimes AS t1
+		JOIN
+			chicago.weather AS t2
+		ON
+			t1.reported_crime_date = t2.weather_date
+		GROUP BY
+			reported_crime_date,
+			crime_year
+	)
 	SELECT
-		EXTRACT('year' FROM t1.reported_crime_date) AS crime_year,
-		CASE
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN '1 winter'
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN '2 spring'
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN '3 summer'
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN '4 fall'
-		END AS season,
-		CASE
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN count(*)
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN count(*)
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN count(*)
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN count(*)
-		END AS n_crimes,
-		CASE
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('01', '02', '12') THEN avg(t2.temp_high)
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('03', '04', '05') THEN avg(t2.temp_high)
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('06', '07', '08') THEN avg(t2.temp_high)
-			WHEN EXTRACT('month' FROM t1.reported_crime_date) IN ('09', '10', '11') THEN avg(t2.temp_high)
-		END AS avg_temp	
+		crime_year,
+		initcap(substring(season, 3, length(season))) AS season,
+		round(avg(avg_temp)::NUMERIC) AS avg_temp,
+		sum(n_crimes) AS n_crimes
 	FROM
-		chicago.crimes AS t1
-	JOIN
-		chicago.weather AS t2
-	ON
-		t1.reported_crime_date = t2.weather_date
+		get_season_count
 	GROUP BY
-		reported_crime_date,
-		crime_year
+		crime_year,
+		season
+	ORDER BY
+		crime_year, season
+);
+
+
+WITH get_buckets AS (
+	SELECT
+		*,
+		round((n_crimes - LAG(n_crimes) OVER ()) / LAG(n_crimes) OVER ()::NUMERIC, 2) AS total_crime_growth,
+		ntile(5) OVER (ORDER BY crime_year) AS nt
+	FROM
+		yearly_seasonal_data
 )
 SELECT
 	crime_year,
-	initcap(substring(season, 3, length(season))) AS season,
-	round(avg(avg_temp)::NUMERIC) AS avg_temp,
-	sum(n_crimes) AS n_crimes
+	season,
+	avg_temp,
+	total_crime_growth,
+	CASE
+		WHEN total_crime_growth < 0 THEN 'Loss'
+		ELSE 'Gain'
+	END AS seasonal_growth
 FROM
-	get_season_count
-GROUP BY
-	crime_year,
-	season
-ORDER BY
-	crime_year, season;
+	get_buckets
+WHERE
+	nt = 3;
 ```
 
 **Results:**
 
-crime_year|season|avg_temp|n_crimes|
-----------|------|--------|--------|
-2018|Fall  |      59|   66674|
-2018|Spring|      57|   67174|
-2018|Summer|      83|   75023|
-2018|Winter|      36|   59945|
-2019|Fall  |      59|   64169|
-2019|Spring|      56|   65168|
-2019|Summer|      82|   72953|
-2019|Winter|      34|   59003|
-2020|Fall  |      64|   53030|
-2020|Spring|      59|   47282|
-2020|Summer|      86|   57224|
-2020|Winter|      37|   54640|
-2021|Fall  |      65|   56020|
-2021|Spring|      61|   49514|
-2021|Summer|      84|   56633|
-2021|Winter|      36|   46592|
-2022|Fall  |      64|   66246|
-2022|Spring|      59|   56501|
-2022|Summer|      83|   65317|
-2022|Winter|      33|   50672|
+crime_year|season|avg_temp|total_crime_growth|seasonal_growth|
+----------|------|--------|------------------|---------------|
+2020|Fall  |      64|             -0.10|Loss           |
+2020|Spring|      59|             -0.11|Loss           |
+2020|Summer|      86|              0.21|Gain           |
+2020|Winter|      37|             -0.05|Loss           |
 
 To be continued....
 
