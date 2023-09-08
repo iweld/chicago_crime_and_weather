@@ -810,5 +810,3 @@ crime_year|case  |avg_temp|total_crime_growth|seasonal_growth|
 
 
 
-
-
