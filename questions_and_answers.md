@@ -104,18 +104,18 @@ LIMIT 10;
 
 **Results:**
 
-community      |population|density |reported_crimes|
----------------|----------|--------|---------------|
-Austin         |     96557|13504.48|          66662|
-Near North Side|    105481|38496.72|          51977|
-Near West Side |     67881|11929.88|          41773|
-South Shore    |     53971|18420.14|          40984|
-Loop           |     42298|25635.15|          40245|
-North Lawndale |     34794|10839.25|          39115|
-Humboldt Park  |     54165|15045.83|          34992|
-Auburn Gresham |     44878|11903.98|          33680|
-West Town      |     87781|19166.16|          32812|
-Roseland       |     38816| 8053.11|          30836|
+community             |population|density |reported_crimes|
+----------------------|----------|--------|---------------|
+Austin                |     96557|13504.48|          79271|
+Near North Side       |    105481|38496.72|          63084|
+Near West Side        |     67881|11929.88|          52091|
+South Shore           |     53971|18420.14|          49722|
+Loop                  |     42298|25635.15|          49003|
+North Lawndale        |     34794|10839.25|          46155|
+Humboldt Park         |     54165|15045.83|          41949|
+West Town             |     87781|19166.16|          40772|
+Auburn Gresham        |     44878|11903.98|          40514|
+Greater Grand Crossing|     31471| 8865.07|          37429|
 
 **5.** What are the top ten communities that had the LEAST amount of crimes reported?  Include the current population, density and order by the number of reported crimes.
 
@@ -144,18 +144,18 @@ LIMIT 10;
 
 community      |population|density |reported_crimes|
 ---------------|----------|--------|---------------|
-Edison Park    |     11525|10199.12|           1336|
-Burnside       |      2527| 4142.62|           1787|
-Forest Glen    |     19596| 6123.75|           2601|
-Mount Greenwood|     18628|  6873.8|           2609|
-Hegewisch      |     10027| 1913.55|           2861|
-Montclare      |     14401|14546.46|           2905|
-Oakland        |      6799|11722.41|           3289|
-Fuller Park    |      2567| 3615.49|           3616|
-Archer Heights |     14196| 7062.69|           4011|
-Mckinley Park  |     15923|11292.91|           4081|
+Edison Park    |     11525|10199.12|           1623|
+Burnside       |      2527| 4142.62|           2129|
+Forest Glen    |     19596| 6123.75|           3135|
+Mount Greenwood|     18628|  6873.8|           3150|
+Montclare      |     14401|14546.46|           3616|
+Hegewisch      |     10027| 1913.55|           3632|
+Oakland        |      6799|11722.41|           4267|
+Fuller Park    |      2567| 3615.49|           4342|
+Archer Heights |     14196| 7062.69|           5036|
+Mckinley Park  |     15923|11292.91|           5048|
 
-**6.** What month had the most crimes reported and what was the average and median temperature high in the last five years?
+**6.** What month had the most crimes reported and what was the average and median temperature high in the last six years?
 
 ````sql
 ELECT
@@ -179,20 +179,20 @@ ORDER BY
 
 month    |n_crimes|avg_high_temp|median_high_temp|
 ---------|--------|-------------|----------------|
-July     |  111328|         85.2|            86.0|
-August   |  110659|         84.3|            85.0|
-October  |  105563|         62.5|            62.0|
-June     |  105163|         81.5|            81.0|
-September|  105075|         77.2|            78.0|
-May      |  103985|         71.8|            72.0|
-December |   96505|         40.6|            41.0|
-November |   95501|         47.6|            47.0|
-March    |   92947|         48.0|            47.0|
-January  |   92018|         32.3|            34.0|
-April    |   88707|         56.7|            55.0|
-February |   82329|         35.3|            35.0|
+July     |  135240|         85.1|            86.0|
+August   |  134712|         84.1|            85.0|
+October  |  128470|         62.9|            62.0|
+June     |  127774|         81.6|            81.0|
+September|  127567|         77.4|            78.0|
+May      |  126130|         72.2|            73.0|
+December |  117531|         41.3|            41.0|
+November |  116688|         48.3|            47.0|
+March    |  113630|         47.7|            47.0|
+January  |  113133|         33.4|            34.0|
+April    |  109391|         57.8|            56.0|
+February |  100713|         36.6|            37.0|
 
-**7.** What month had the most homicides reported and what was the average and median temperature high in the last five years?
+**7.** What month had the most homicides reported and what was the average and median temperature high in the last six years?
 
 ````sql
 SELECT
@@ -218,18 +218,18 @@ ORDER BY
 
 month    |n_crimes|avg_high_temp|median_high_temp|
 ---------|--------|-------------|----------------|
-July     |     398|         85.3|            86.0|
-June     |     360|         82.5|            82.0|
-September|     356|         78.1|            79.0|
-August   |     330|         84.6|            85.0|
-May      |     326|         72.7|            73.0|
-October  |     296|         63.8|            64.0|
-April    |     275|         59.3|            58.0|
-November |     263|         49.8|            48.0|
-December |     249|         41.4|            42.0|
-January  |     212|         32.9|            33.0|
-February |     190|         35.0|            37.0|
-March    |     185|         49.3|            48.0|
+July     |     459|         85.3|            86.0|
+June     |     432|         82.5|            83.0|
+September|     404|         78.1|            79.0|
+May      |     391|         73.1|            74.0|
+August   |     389|         84.4|            85.0|
+October  |     350|         63.9|            64.0|
+April    |     331|         59.8|            58.0|
+November |     317|         50.2|            49.0|
+December |     287|         41.7|            42.0|
+January  |     256|         33.8|            34.0|
+February |     228|         36.5|            37.5|
+March    |     222|         49.1|            48.0|
 
 **8.** List the most violent year and the number of arrests with percentage.  Order by the number of crimes in decending order.  Determine the most violent year by the number of reported Homicides, Assaults and Battery for that year.
 
@@ -267,6 +267,7 @@ most_violent_year|reported_violent_crimes|number_of_arrests|
 -----------------|-----------------------|-----------------|
 2018|                  70835|13907 (19.63%)   |
 2019|                  70645|14334 (20.29%)   |
+2023|                  67355|9340 (13.87%)    |
 2022|                  62412|8165 (13.08%)    |
 2021|                  61611|7855 (12.75%)    |
 2020|                  60562|9577 (15.81%)    |
@@ -355,6 +356,7 @@ crime_year|day_of_week|avg_precipitation|avg_temp_high|n_crimes|day_of_week|avg_
 2020|Wednesday  |             0.29|        63.54|   11394|Sunday     |        61.51|   23477|             12083|
 2021|Sunday     |             0.30|        57.12|   10889|Monday     |        65.31|   22840|             11951|
 2022|Friday     |             0.21|        51.44|   13029|Monday     |        59.95|   26026|             12997|
+2023|Friday     |             0.24|        60.14|   15855|Tuesday    |        65.40|   27157|             11302|
 
 **10.** List the days with the most reported crimes when there is zero precipitation and the day when precipitation is greater than .5".  Include the day of the week, high temperature, amount and precipitation and the total number of reported crimes for that day.
 
@@ -429,7 +431,7 @@ reported_crime_date|day_of_week|temp_high|precipitation|reported_crimes|
 2020-05-31|Sunday     |       69|          0.0|           1899|
 2018-10-01|Monday     |       72|         1.56|            926|
 
-**11.** List the most consecutive days where a homicide occured between 2018-2022 and the timeframe.
+**11.** List the most consecutive days where a homicide occured between 2018-2023 and the timeframe.
 
 ```sql
 DROP TABLE IF EXISTS homicide_dates;
@@ -530,16 +532,16 @@ FROM
 
 location_description                  |location_description_count|warm_weather_perc|hot_weather_perc|cold_weather_perc|freezing_weather_perc|
 --------------------------------------|--------------------------|-----------------|----------------|-----------------|---------------------|
-Street                                |                    285785|140046 (49.00)   |19056 (6.67)    |106638 (37.31)   |20045 (7.01)         |
-Apartment                             |                    196352|89500 (45.58)    |12261 (6.24)    |78170 (39.81)    |16421 (8.36)         |
-Residence                             |                    190224|86110 (45.27)    |12178 (6.40)    |76640 (40.29)    |15296 (8.04)         |
-Sidewalk                              |                     79100|41721 (52.74)    |6042 (7.64)     |26933 (34.05)    |4404 (5.57)          |
-Small Retail Store                    |                     32251|14926 (46.28)    |2017 (6.25)     |12665 (39.27)    |2643 (8.20)          |
-Restaurant                            |                     26437|11791 (44.60)    |1620 (6.13)     |10695 (40.45)    |2331 (8.82)          |
-Alley                                 |                     24754|12850 (51.91)    |1747 (7.06)     |8733 (35.28)     |1424 (5.75)          |
+Street                                |                    363349|180260 (49.61)   |23918 (6.58)    |136783 (37.65)   |22388 (6.16)         |
+Apartment                             |                    245159|113450 (46.28)   |15218 (6.21)    |98388 (40.13)    |18103 (7.38)         |
+Residence                             |                    221626|101749 (45.91)   |14121 (6.37)    |89374 (40.33)    |16382 (7.39)         |
+Sidewalk                              |                     92128|49108 (53.30)    |6962 (7.56)     |31372 (34.05)    |4686 (5.09)          |
+Small Retail Store                    |                     39506|18481 (46.78)    |2433 (6.16)     |15701 (39.74)    |2891 (7.32)          |
+Restaurant                            |                     31822|14396 (45.24)    |1900 (5.97)     |13033 (40.96)    |2493 (7.83)          |
+Alley                                 |                     30873|16105 (52.17)    |2172 (7.04)     |11015 (35.68)    |1581 (5.12)          |
+Parking Lot / Garage (Non Residential)|                     30555|15879 (51.97)    |2041 (6.68)     |11083 (36.27)    |1552 (5.08)          |
+Vehicle Non-Commercial                |                     22795|10875 (47.71)    |1527 (6.70)     |8805 (38.63)     |1588 (6.97)          |
 Other                                 |                     22728|9647 (42.45)     |1251 (5.50)     |9587 (42.18)     |2243 (9.87)          |
-Parking Lot / Garage (Non Residential)|                     20601|10901 (52.91)    |1389 (6.74)     |7085 (34.39)     |1226 (5.95)          |
-Vehicle Non-Commercial                |                     19114|8978 (46.97)     |1283 (6.71)     |7371 (38.56)     |1482 (7.75)          |
 
 **13.** Calculate the year over year growth in the number of reported crimes.
 
@@ -566,11 +568,12 @@ FROM
 
 reported_crime_year|num_of_crimes|prev_year_count|year_over_year|
 -------------------|-------------|---------------|--------------|
-2018|       268816|               |              |
+2018|       268816|         |        |
 2019|       261293|         268816|         -2.80|
 2020|       212176|         261293|        -18.80|
 2021|       208759|         212176|         -1.61|
 2022|       238736|         208759|         14.36|
+2023|       261199|         238736|          9.41|
 
 **14.** Calculate the year over year growth in the number of reported domestic violence crimes.
 
@@ -599,11 +602,12 @@ FROM
 
 domestic_crime_year|num_of_crimes|prev_year_count|domestic_yoy|
 -------------------|-------------|---------------|------------|
-2018|        44099|               |            |
+2018|        44099|         |      |
 2019|        43344|          44099|       -1.71|
 2020|        39983|          43344|       -7.75|
 2021|        45018|          39983|       12.59|
 2022|        42530|          45018|       -5.53|
+2023|        46834|          42530|       10.12|
 
 **15.** Calculate the year over year growth in the number of reported domestic violence crimes.
 
@@ -637,18 +641,18 @@ FROM
 
 total_month|n_crimes|prev_month_count|avg_high_temp|avg_temp_diff|total_crime_growth|
 -----------|--------|----------------|-------------|-------------|------------------|
-January    |   92018|                |         32.3|             |                  |
-February   |   82329|           92018|         35.3|          3.0|            -10.53|
-March      |   92947|           82329|         48.0|         12.7|             12.90|
-April      |   88707|           92947|         56.7|          8.7|             -4.56|
-May        |  103985|           88707|         71.8|         15.1|             17.22|
-June       |  105163|          103985|         81.5|          9.7|              1.13|
-July       |  111328|          105163|         85.2|          3.7|              5.86|
-August     |  110659|          111328|         84.3|         -0.9|             -0.60|
-September  |  105075|          110659|         77.2|         -7.1|             -5.05|
-October    |  105563|          105075|         62.5|        -14.7|              0.46|
-November   |   95501|          105563|         47.6|        -14.9|             -9.53|
-December   |   96505|           95501|         40.6|         -7.0|              1.05|
+January    |  113133|          |         33.4|       |            |
+February   |  100713|          113133|         36.6|          3.2|            -10.98|
+March      |  113630|          100713|         47.7|         11.1|             12.83|
+April      |  109391|          113630|         57.8|         10.1|             -3.73|
+May        |  126130|          109391|         72.2|         14.4|             15.30|
+June       |  127774|          126130|         81.6|          9.4|              1.30|
+July       |  135240|          127774|         85.1|          3.5|              5.84|
+August     |  134712|          135240|         84.1|         -1.0|             -0.39|
+September  |  127567|          134712|         77.4|         -6.7|             -5.30|
+October    |  128470|          127567|         62.9|        -14.5|              0.71|
+November   |  116688|          128470|         48.3|        -14.6|             -9.17|
+December   |  117531|          116688|         41.3|         -7.0|              0.72|
 
 **16.** List the number of crimes reported and seasonal growth for each astronomical season and what was the average temperature for each season in 2020?  Use a conditional statement to display either a Gain/Loss for the season and the season over season growth.
 
@@ -705,7 +709,7 @@ WITH get_buckets AS (
 	SELECT
 		*,
 		round((n_crimes - LAG(n_crimes) OVER ()) / LAG(n_crimes) OVER ()::NUMERIC, 2) AS total_crime_growth,
-		ntile(5) OVER (ORDER BY crime_year) AS nt
+		ntile(6) OVER (ORDER BY crime_year) AS nt
 	FROM
 		yearly_seasonal_data
 )

@@ -168,7 +168,7 @@ Mckinley Park  |     15923|11292.91|           5048|
 */
 
 -- 6. What month had the most crimes reported and what was the average and median
--- temperature high in the last five years?
+-- temperature high in the last six years?
 
 SELECT
 	to_char(t1.reported_crime_date, 'Month') AS month,
@@ -208,7 +208,7 @@ February |  100713|         36.6|            37.0|
 */
 
 -- 7. What month had the most homicides reported and what was the average and median
--- temperature high in the last five years?
+-- temperature high in the last six years?
 
 SELECT
 	to_char(t1.reported_crime_date, 'Month') AS month,
