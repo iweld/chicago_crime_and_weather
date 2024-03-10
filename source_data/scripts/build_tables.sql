@@ -123,6 +123,24 @@ COPY import_data.crimes (
 FROM '/var/lib/postgresql/source_data/csv/chicago_crime_2022.csv'
 WITH DELIMITER ',' HEADER CSV;
 
+-- 2023 CSV files.
+COPY import_data.crimes (
+	date_reported,
+	city_block,	
+	primary_type,	
+	primary_description,	
+	location_description,	
+	arrest,	
+	domestic,	
+	community_area,	
+	year,	
+	latitude,	
+	longitude,	
+	location
+)
+FROM '/var/lib/postgresql/source_data/csv/chicago_crime_2023.csv'
+WITH DELIMITER ',' HEADER CSV;
+
 -- Create Chicago Weather Table
 DROP TABLE IF EXISTS import_data.weather;
 CREATE TABLE import_data.weather (
@@ -143,7 +161,7 @@ COPY import_data.weather (
 	average,
 	precipitation
 )
-FROM '/var/lib/postgresql/source_data/csv/chicago_temps_18-22.csv'
+FROM '/var/lib/postgresql/source_data/csv/chicago_temps_18-23.csv'
 WITH DELIMITER ',' HEADER CSV;
 
 -- Create Chicago Community Area Table
