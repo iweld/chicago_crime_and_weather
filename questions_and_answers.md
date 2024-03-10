@@ -9,7 +9,7 @@
 :exclamation: If you find this repository helpful, please consider giving it a :star:. Thanks! :exclamation:
 
 
-**1.**  List the total number of reported crimes between 2018 and 2022?
+**1.**  List the total number of reported crimes between 2018 and 2023?
 
 ````sql
 SELECT 
@@ -22,9 +22,9 @@ FROM
 
 Total Reported Crimes|
 ---------------------|
-1,189,780           |
+ 1,450,979           |
 
-**2.** List the total amount of Homicides, Batteries and Assaults reported between 2018 and 2022.
+**2.** List the total amount of Homicides, Batteries and Assaults reported between 2018 and 2023.
 
 ````sql
 SELECT 
@@ -44,9 +44,9 @@ ORDER BY
 
 crime_type|n_crimes|
 ----------|--------|
-Battery   |  222214|
-Assault   |  100411|
-Homicide  |    3440|
+Battery   |  266357|
+Assault   |  122997|
+Homicide  |    4066|
 
 **3.** Which are the 3 most common crimes reported and what percentage amount are they from the total amount of reported crimes?
 
@@ -75,9 +75,9 @@ LIMIT 3;
 
 crime_type     |n_crimes|total_percentage|
 ---------------|--------|----------------|
-Theft          |  264701|           22.25|
-Battery        |  222214|           18.68|
-Criminal Damage|  131716|           11.07|
+Theft          |  321957|           22.19|
+Battery        |  266357|           18.36|
+Criminal Damage|  161766|           11.15|
 
 **4.** What are the top ten communities that had the MOST amount of crimes reported?  Include the current population, density and order by the number of reported crimes.
 
